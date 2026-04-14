@@ -1,5 +1,6 @@
 package cj.projects.taskmanager.persistence.entities;
 
+import cj.projects.taskmanager.persistence.entities.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,8 @@ public class TaskEntity {
     private LocalDateTime createAd;
     private LocalDateTime updateAd;
     private LocalDateTime deleteAd;
+
+    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity author;
