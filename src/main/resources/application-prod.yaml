@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: taskManager
+  datasource:
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
