@@ -25,6 +25,7 @@ public class TaskEntity {
     private LocalDateTime updateAd;
     private LocalDateTime deleteAd;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserEntity author;
 
 }

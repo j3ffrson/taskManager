@@ -3,9 +3,7 @@ package cj.projects.taskmanager.persistence.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,6 +37,9 @@ public class UserEntity {
     private boolean isAccountNonLocked;
 
     private boolean isCredentialsNonExpired;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<TaskEntity> tasks= new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
