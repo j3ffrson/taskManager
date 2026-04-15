@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TaskService {
 
     Page<TaskDto> findAllTaskPage(Pageable pageable);
-    Page<TaskDto> findAllTaskByStatusPage(Pageable pageable);
+    Page<TaskDto> findAllTaskByStatusPage(String status, Pageable pageable);
     Page<TaskDto> findAllTaskByAuthorPage(Pageable pageable,UUID id);
     Page<TaskDto> findAllTaskByCreateAdDateBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable);
     TaskDto findTaskById(UUID id);
