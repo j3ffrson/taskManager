@@ -184,6 +184,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Optional<Void> deleteTaskById(UUID id) {
+        taskRepository.deleteById(id);
         return Optional.empty();
     }
 
