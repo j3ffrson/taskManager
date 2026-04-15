@@ -1,4 +1,4 @@
-package cj.projects.taskmanager.services.dto;
+package cj.projects.taskmanager.services.dto.response;
 
 import cj.projects.taskmanager.persistence.entities.enums.Status;
 import lombok.Data;

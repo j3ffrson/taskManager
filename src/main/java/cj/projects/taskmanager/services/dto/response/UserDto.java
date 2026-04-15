@@ -1,4 +1,4 @@
-package cj.projects.taskmanager.services.dto;
+package cj.projects.taskmanager.services.dto.response;
 
 import lombok.Data;
 
