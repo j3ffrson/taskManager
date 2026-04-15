@@ -9,6 +9,7 @@ import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 import cj.projects.taskmanager.services.dto.response.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,17 +32,7 @@ public class TaskServiceImpl implements TaskService {
 
         return tasks.map(task -> {
 
-            UserEntity userEntity= task.getAuthor();
-            UserDto userDto = new UserDto();
-            userDto.setId(userEntity.getId());
-            userDto.setName(userEntity.getName());
-            userDto.setUsername(userEntity.getUsername());
-            userDto.setLastName(userEntity.getLastName());
-            userDto.setEmail(userEntity.getEmail());
-            userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
-            userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
-            userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
-            userDto.setEnabled(userEntity.isEnabled());
+            UserDto userDto = getUserDto(task);
 
             TaskDto dto = new TaskDto();
             dto.setUuid(task.getUuid());
@@ -63,17 +54,7 @@ public class TaskServiceImpl implements TaskService {
 
         return tasks.map(task -> {
 
-            UserEntity userEntity= task.getAuthor();
-            UserDto userDto = new UserDto();
-            userDto.setId(userEntity.getId());
-            userDto.setName(userEntity.getName());
-            userDto.setUsername(userEntity.getUsername());
-            userDto.setLastName(userEntity.getLastName());
-            userDto.setEmail(userEntity.getEmail());
-            userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
-            userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
-            userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
-            userDto.setEnabled(userEntity.isEnabled());
+            UserDto userDto = getUserDto(task);
 
             TaskDto dto = new TaskDto();
             dto.setUuid(task.getUuid());
@@ -95,17 +76,7 @@ public class TaskServiceImpl implements TaskService {
 
         return tasks.map(task -> {
 
-            UserEntity userEntity= task.getAuthor();
-            UserDto userDto = new UserDto();
-            userDto.setId(userEntity.getId());
-            userDto.setName(userEntity.getName());
-            userDto.setUsername(userEntity.getUsername());
-            userDto.setLastName(userEntity.getLastName());
-            userDto.setEmail(userEntity.getEmail());
-            userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
-            userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
-            userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
-            userDto.setEnabled(userEntity.isEnabled());
+            UserDto userDto = getUserDto(task);
 
             TaskDto dto = new TaskDto();
             dto.setUuid(task.getUuid());
@@ -127,17 +98,7 @@ public class TaskServiceImpl implements TaskService {
 
         return tasks.map(task -> {
 
-            UserEntity userEntity= task.getAuthor();
-            UserDto userDto = new UserDto();
-            userDto.setId(userEntity.getId());
-            userDto.setName(userEntity.getName());
-            userDto.setUsername(userEntity.getUsername());
-            userDto.setLastName(userEntity.getLastName());
-            userDto.setEmail(userEntity.getEmail());
-            userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
-            userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
-            userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
-            userDto.setEnabled(userEntity.isEnabled());
+            UserDto userDto = getUserDto(task);
 
             TaskDto dto = new TaskDto();
             dto.setUuid(task.getUuid());
@@ -170,5 +131,20 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Optional<Void> deleteTaskById(UUID id) {
         return Optional.empty();
+    }
+
+    private static @NonNull UserDto getUserDto(TaskEntity task) {
+        UserEntity userEntity= task.getAuthor();
+        UserDto userDto = new UserDto();
+        userDto.setId(userEntity.getId());
+        userDto.setName(userEntity.getName());
+        userDto.setUsername(userEntity.getUsername());
+        userDto.setLastName(userEntity.getLastName());
+        userDto.setEmail(userEntity.getEmail());
+        userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
+        userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
+        userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
+        userDto.setEnabled(userEntity.isEnabled());
+        return userDto;
     }
 }
