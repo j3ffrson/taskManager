@@ -39,7 +39,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskDto> findAllTaskByAuthorPage(Pageable pageable, UUID id) {
-        Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByAuthorUuid(id,pageable);
+        Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByAuthorId(id,pageable);
         return tasks.map(TaskServiceImpl::getTaskDto);
     }
 

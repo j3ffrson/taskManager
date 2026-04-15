@@ -2,10 +2,12 @@ package cj.projects.taskmanager.services.dto.response;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class UserDto {
 
-    private Long id;
+    private UUID id;
     private String name;
     private String username;
     private String lastName;
