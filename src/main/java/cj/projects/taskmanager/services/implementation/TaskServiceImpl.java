@@ -28,134 +28,44 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Page<TaskDto> findAllTaskPage(Pageable pageable) {
         Page<TaskEntity> tasks = taskRepository.findAll(pageable);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        return tasks.map(task -> {
-
-            UserDto userDto = getUserDto(task);
-
-            TaskDto dto = new TaskDto();
-            dto.setUuid(task.getUuid());
-            dto.setTitle(task.getTitle());
-            dto.setDescription(task.getDescription());
-            dto.setAuthor(userDto);
-            dto.setStatus(task.getStatus().name());
-            dto.setCreateAd(task.getCreateAd().format(format));
-            dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-            dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-            return dto;
-        });
+        return tasks.map(TaskServiceImpl::getTaskDto);
     }
 
     @Override
     public Page<TaskDto> findAllTaskByStatusPage(String status,Pageable pageable) {
         Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByStatus(Status.valueOf(status),pageable);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        return tasks.map(task -> {
-
-            UserDto userDto = getUserDto(task);
-
-            TaskDto dto = new TaskDto();
-            dto.setUuid(task.getUuid());
-            dto.setTitle(task.getTitle());
-            dto.setDescription(task.getDescription());
-            dto.setAuthor(userDto);
-            dto.setStatus(task.getStatus().name());
-            dto.setCreateAd(task.getCreateAd().format(format));
-            dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-            dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-            return dto;
-        });
+        return tasks.map(TaskServiceImpl::getTaskDto);
     }
 
     @Override
     public Page<TaskDto> findAllTaskByAuthorPage(Pageable pageable, UUID id) {
         Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByAuthorUuid(id,pageable);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        return tasks.map(task -> {
-
-            UserDto userDto = getUserDto(task);
-
-            TaskDto dto = new TaskDto();
-            dto.setUuid(task.getUuid());
-            dto.setTitle(task.getTitle());
-            dto.setDescription(task.getDescription());
-            dto.setAuthor(userDto);
-            dto.setStatus(task.getStatus().name());
-            dto.setCreateAd(task.getCreateAd().format(format));
-            dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-            dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-            return dto;
-        });
+        return tasks.map(TaskServiceImpl::getTaskDto);
     }
 
     @Override
     public Page<TaskDto> findAllTaskByCreateAdDateBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable) {
         Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByCreateAdDateBetween(createAdDateAfter,createAdDateBefore,pageable);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        return tasks.map(task -> {
-
-            UserDto userDto = getUserDto(task);
-
-            TaskDto dto = new TaskDto();
-            dto.setUuid(task.getUuid());
-            dto.setTitle(task.getTitle());
-            dto.setDescription(task.getDescription());
-            dto.setAuthor(userDto);
-            dto.setStatus(task.getStatus().name());
-            dto.setCreateAd(task.getCreateAd().format(format));
-            dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-            dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-            return dto;
-        });
+        return tasks.map(TaskServiceImpl::getTaskDto);
     }
 
     @Override
     public TaskDto findTaskById(UUID id) {
 
         TaskEntity task = taskRepository.findById(id).orElseThrow();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        TaskDto dto = new TaskDto();
-        dto.setUuid(task.getUuid());
-        dto.setTitle(task.getTitle());
-        dto.setDescription(task.getDescription());
-        dto.setAuthor(getUserDto(task));
-        dto.setStatus(task.getStatus().name());
-        dto.setCreateAd(task.getCreateAd().format(format));
-        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-        dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-
-        return dto;
+        return getTaskDto(task);
     }
 
     @Override
     public TaskDto createNewTask(TaskRequest taskRequest) {
-        TaskEntity newTask= TaskEntity.builder()
+        TaskEntity newTask = TaskEntity.builder()
                 .title(taskRequest.title())
                 .description(taskRequest.description())
                 .status(Status.valueOf(taskRequest.status()))
                 .createAd(LocalDate.now().atStartOfDay())
                 .build();
         taskRepository.save(newTask);
-
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-        TaskDto dto = new TaskDto();
-        dto.setUuid(newTask.getUuid());
-        dto.setTitle(newTask.getTitle());
-        dto.setDescription(newTask.getDescription());
-        dto.setAuthor(getUserDto(newTask));
-        dto.setStatus(newTask.getStatus().name());
-        dto.setCreateAd(newTask.getCreateAd().format(format));
-        dto.setUpdateAd(newTask.getUpdateAd() != null ? newTask.getUpdateAd().format(format) : null);
-        dto.setDeleteAd(newTask.getDeleteAd() != null ? newTask.getDeleteAd().format(format) : null);
-
-        return dto;
-
+        return getTaskDto(newTask);
     }
 
     @Override
@@ -167,19 +77,8 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(Status.valueOf(taskRequest.status()));
         task.setUpdateAd(LocalDate.now().atStartOfDay());
         taskRepository.save(task);
+        return getTaskDto(task);
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        TaskDto dto = new TaskDto();
-        dto.setUuid(task.getUuid());
-        dto.setTitle(task.getTitle());
-        dto.setDescription(task.getDescription());
-        dto.setAuthor(getUserDto(task));
-        dto.setStatus(task.getStatus().name());
-        dto.setCreateAd(task.getCreateAd().format(format));
-        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-        dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-
-        return dto;
     }
 
     @Override
@@ -201,5 +100,19 @@ public class TaskServiceImpl implements TaskService {
         userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
         userDto.setEnabled(userEntity.isEnabled());
         return userDto;
+    }
+    private static @NonNull TaskDto getTaskDto(TaskEntity task) {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        TaskDto dto = new TaskDto();
+        dto.setUuid(task.getUuid());
+        dto.setTitle(task.getTitle());
+        dto.setDescription(task.getDescription());
+        dto.setAuthor(getUserDto(task));
+        dto.setStatus(task.getStatus().name());
+        dto.setCreateAd(task.getCreateAd().format(format));
+        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
+        dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
+
+        return dto;
     }
 }
