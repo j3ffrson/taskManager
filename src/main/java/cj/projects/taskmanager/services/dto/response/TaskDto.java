@@ -15,7 +15,7 @@ public class TaskDto {
     private String updateAd;
     private String deleteAd;
 
-    private Status status;
+    private String status;
 
     private UserDto author;
 
