@@ -1,15 +1,19 @@
 package cj.projects.taskmanager.services.implementation;
 
+import cj.projects.taskmanager.persistence.entities.TaskEntity;
+import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.services.TaskService;
 import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
+import cj.projects.taskmanager.services.dto.response.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,7 +25,34 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskDto> findAllTaskPage(Pageable pageable) {
-        return null;
+        Page<TaskEntity> tasks = taskRepository.findAll(pageable);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        return tasks.map(task -> {
+
+            UserEntity userEntity= task.getAuthor();
+            UserDto userDto = new UserDto();
+            userDto.setId(userEntity.getId());
+            userDto.setName(userEntity.getName());
+            userDto.setUsername(userEntity.getUsername());
+            userDto.setLastName(userEntity.getLastName());
+            userDto.setEmail(userEntity.getEmail());
+            userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
+            userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
+            userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
+            userDto.setEnabled(userEntity.isEnabled());
+
+            TaskDto dto = new TaskDto();
+            dto.setUuid(task.getUuid());
+            dto.setTitle(task.getTitle());
+            dto.setDescription(task.getDescription());
+            dto.setAuthor(userDto);
+            dto.setStatus(task.getStatus().name());
+            dto.setCreateAd(task.getCreateAd().format(format));
+            dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
+            dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
+            return dto;
+        });
     }
 
     @Override
