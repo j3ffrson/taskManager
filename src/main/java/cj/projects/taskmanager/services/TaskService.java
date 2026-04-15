@@ -17,7 +17,7 @@ public interface TaskService {
     Page<TaskDto> findAllTaskByCreateAdDateBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable);
     TaskDto findTaskById(UUID id);
     TaskDto createNewTask(TaskRequest taskRequest);
-    TaskDto updateNewTask(TaskRequest taskRequest);
+    TaskDto updateNewTask(TaskRequest taskRequest,UUID id);
     Optional<Void> deleteTaskById(UUID id);
 
 }
