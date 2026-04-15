@@ -115,7 +115,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto findTaskById(UUID id) {
-        return null;
+
+        TaskEntity task = taskRepository.findById(id).orElseThrow();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        TaskDto dto = new TaskDto();
+        dto.setUuid(task.getUuid());
+        dto.setTitle(task.getTitle());
+        dto.setDescription(task.getDescription());
+        dto.setAuthor(getUserDto(task));
+        dto.setStatus(task.getStatus().name());
+        dto.setCreateAd(task.getCreateAd().format(format));
+        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
+        dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
+
+        return dto;
     }
 
     @Override
