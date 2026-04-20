@@ -49,4 +49,9 @@ public class TaskController {
         return new ResponseEntity<>(taskService.createNewTask(taskRequest),HttpStatus.CREATED);
     }
 
+    @PutMapping("/update/{id}")
+    ResponseEntity<TaskDto> updateTask(@RequestBody TaskRequest taskRequest,@PathVariable String id) {
+        return new ResponseEntity<>(taskService.updateNewTask(taskRequest,UUID.fromString(id)),HttpStatus.OK);
+    }
+
 }
