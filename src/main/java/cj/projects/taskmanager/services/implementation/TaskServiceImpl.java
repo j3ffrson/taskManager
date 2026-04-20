@@ -78,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity task= taskRepository.findById(id).orElseThrow();
         task.setTitle(taskRequest.title());
         task.setDescription(taskRequest.description());
-        task.setStatus(Status.valueOf(taskRequest.status()));
+        task.setStatus(Status.NEW);
         task.setUpdateAd(LocalDate.now().atStartOfDay());
         taskRepository.save(task);
         return getTaskDto(task);
