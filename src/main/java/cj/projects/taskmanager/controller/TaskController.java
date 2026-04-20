@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/tasks",version = "1.0")
@@ -34,6 +36,11 @@ public class TaskController {
         Pageable pageable= PageRequest.of(pageNumber,pageSize);
         return new ResponseEntity<>(taskService.findAllTaskByStatusPage(status,pageable), HttpStatus.OK);
 
+    }
+
+    @GetMapping("/{id}")
+    ResponseEntity<TaskDto> getTaskById(@PathVariable String id){
+        return new ResponseEntity<>(taskService.findTaskById(UUID.fromString(id)), HttpStatus.OK);
     }
 
 }
