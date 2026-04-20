@@ -1,6 +1,7 @@
 package cj.projects.taskmanager.controller;
 
 import cj.projects.taskmanager.services.TaskService;
+import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,11 @@ public class TaskController {
     @GetMapping("/{id}")
     ResponseEntity<TaskDto> getTaskById(@PathVariable String id){
         return new ResponseEntity<>(taskService.findTaskById(UUID.fromString(id)), HttpStatus.OK);
+    }
+
+    @PostMapping("/new")
+    ResponseEntity<TaskDto> createNewTask(@RequestBody TaskRequest taskRequest){
+        return new ResponseEntity<>(taskService.createNewTask(taskRequest),HttpStatus.CREATED);
     }
 
 }
