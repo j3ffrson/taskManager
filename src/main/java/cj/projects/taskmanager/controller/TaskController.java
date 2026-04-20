@@ -8,10 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +23,16 @@ public class TaskController {
 
         Pageable pageable= PageRequest.of(pageNumber,pageSize);
         return new ResponseEntity<>(taskService.findAllTaskPage(pageable), HttpStatus.OK);
+
+    }
+
+    @GetMapping("/status/{status}")
+    ResponseEntity<Page<TaskDto>> getAllTaskByStatus(@RequestParam(name = "page",defaultValue = "0") int pageNumber,
+                                                     @RequestParam(name = "size",defaultValue = "3") int pageSize,
+                                                     @PathVariable String status){
+
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        return new ResponseEntity<>(taskService.findAllTaskByStatusPage(status,pageable), HttpStatus.OK);
 
     }
 
