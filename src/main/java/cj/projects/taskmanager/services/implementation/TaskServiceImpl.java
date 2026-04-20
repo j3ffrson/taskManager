@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -58,11 +60,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto createNewTask(TaskRequest taskRequest) {
+        Authentication context= SecurityContextHolder.getContext().getAuthentication();
         TaskEntity newTask = TaskEntity.builder()
                 .title(taskRequest.title())
                 .description(taskRequest.description())
-                .status(Status.valueOf(taskRequest.status()))
+                .status(Status.NEW)
                 .createAd(LocalDate.now().atStartOfDay())
+                .author(UserEntity.builder().build())
                 .build();
         taskRepository.save(newTask);
         return getTaskDto(newTask);
@@ -74,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity task= taskRepository.findById(id).orElseThrow();
         task.setTitle(taskRequest.title());
         task.setDescription(taskRequest.description());
-        task.setStatus(Status.valueOf(taskRequest.status()));
+        task.setStatus(Status.NEW);
         task.setUpdateAd(LocalDate.now().atStartOfDay());
         taskRepository.save(task);
         return getTaskDto(task);
