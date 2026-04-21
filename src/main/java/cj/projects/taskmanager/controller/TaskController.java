@@ -54,10 +54,11 @@ public class TaskController {
     ResponseEntity<TaskDto> updateTask(@RequestBody TaskRequest taskRequest,@PathVariable String id) {
         return new ResponseEntity<>(taskService.updateNewTask(taskRequest,UUID.fromString(id)),HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{id}")
     ResponseEntity<Void> deleteTask(@PathVariable String id){
         taskService.deleteTaskById(UUID.fromString(id));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
