@@ -5,20 +5,11 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class UserDto {
+public class AuthorTaskDto {
 
-    private UUID id;
     private String name;
     private String username;
     private String lastName;
     private String email;
-
-    private boolean isEnabled;
-
-    private boolean isAccountNonExpired;
-
-    private boolean isAccountNonLocked;
-
-    private boolean isCredentialsNonExpired;
 
 }

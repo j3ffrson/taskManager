@@ -10,12 +10,12 @@ import java.util.*;
 @Getter
 @Setter
 @Builder
-@Table(name = "author")
+@Table(name = "authors")
 @Entity
 public class UserEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String name;
@@ -34,12 +34,12 @@ public class UserEntity {
 
     private boolean isCredentialsNonExpired;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author",orphanRemoval = true,fetch = FetchType.LAZY)
     private List<TaskEntity> tasks= new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "author_roles",
+            joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 

@@ -13,12 +13,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Table(name = "role")
+@Table(name = "roles")
 @Entity
 public class RoleEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Enumerated(EnumType.STRING)

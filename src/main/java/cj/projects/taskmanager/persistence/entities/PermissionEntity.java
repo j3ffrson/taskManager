@@ -10,13 +10,13 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Table(name = "author")
+@Table(name = "permissions")
 @Entity
 public class PermissionEntity {
 
     @Id
-    @GeneratedValue
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @Column(nullable = false,updatable = false)
     private String name;
 }
