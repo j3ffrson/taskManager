@@ -86,8 +86,9 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskDto updateNewTask(TaskRequest taskRequest, UUID id) {
         TaskEntity task = taskRepository.findById(id).orElseThrow();
-        task.setTitle(taskRequest.title());
-        task.setDescription(taskRequest.description());
+        task.setTitle(taskRequest.title()==null?task.getTitle():taskRequest.title());
+        task.setDescription(taskRequest.description()==null?task.getDescription():taskRequest.description());
+        task.setStatus(taskRequest.status()==null?task.getStatus():Status.valueOf(taskRequest.status()));
         task.setUpdateAd(LocalDateTime.now());
         taskRepository.save(task);
         return getTaskDto(task);
