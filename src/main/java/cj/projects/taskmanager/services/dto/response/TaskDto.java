@@ -1,6 +1,5 @@
 package cj.projects.taskmanager.services.dto.response;
 
-import cj.projects.taskmanager.persistence.entities.enums.Status;
 import lombok.Data;
 
 import java.util.UUID;
@@ -17,6 +16,6 @@ public class TaskDto {
 
     private String status;
 
-    private UserDto author;
+    private AuthorTaskDto author;
 
 }

@@ -17,8 +17,8 @@ import java.util.UUID;
 public class TaskEntity {
 
     @Id
-    @GeneratedValue
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String title;
     private String description;
