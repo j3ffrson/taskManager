@@ -7,7 +7,7 @@ import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.services.TaskService;
 import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
-import cj.projects.taskmanager.services.dto.response.UserDto;
+import cj.projects.taskmanager.services.dto.response.AuthorTaskDto;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
@@ -91,24 +91,19 @@ public class TaskServiceImpl implements TaskService {
         return Optional.empty();
     }
 
-    private static @NonNull UserDto getUserDto(TaskEntity task) {
+    private static @NonNull AuthorTaskDto getUserDto(TaskEntity task) {
         UserEntity userEntity= task.getAuthor();
-        UserDto userDto = new UserDto();
-        userDto.setId(userEntity.getId());
+        AuthorTaskDto userDto = new AuthorTaskDto();
         userDto.setName(userEntity.getName());
         userDto.setUsername(userEntity.getUsername());
         userDto.setLastName(userEntity.getLastName());
         userDto.setEmail(userEntity.getEmail());
-        userDto.setAccountNonExpired(userEntity.isAccountNonExpired());
-        userDto.setAccountNonLocked(userEntity.isAccountNonLocked());
-        userDto.setCredentialsNonExpired(userEntity.isCredentialsNonExpired());
-        userDto.setEnabled(userEntity.isEnabled());
         return userDto;
     }
     private static @NonNull TaskDto getTaskDto(TaskEntity task) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         TaskDto dto = new TaskDto();
-        dto.setUuid(task.getUuid());
+        dto.setUuid(task.getId());
         dto.setTitle(task.getTitle());
         dto.setDescription(task.getDescription());
         dto.setAuthor(getUserDto(task));
