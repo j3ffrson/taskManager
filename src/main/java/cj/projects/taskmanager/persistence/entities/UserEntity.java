@@ -34,7 +34,7 @@ public class UserEntity {
 
     private boolean isCredentialsNonExpired;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author",orphanRemoval = true,fetch = FetchType.LAZY)
     private List<TaskEntity> tasks= new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)

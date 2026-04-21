@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Table(name = "task")
+@Table(name = "tasks")
 @Entity
 public class TaskEntity {
 
@@ -26,9 +26,11 @@ public class TaskEntity {
     private LocalDateTime updateAd;
     private LocalDateTime deleteAd;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     private UserEntity author;
 
 }
