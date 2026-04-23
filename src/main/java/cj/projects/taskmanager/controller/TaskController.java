@@ -3,6 +3,7 @@ package cj.projects.taskmanager.controller;
 import cj.projects.taskmanager.services.TaskService;
 import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,12 +46,12 @@ public class TaskController {
     }
 
     @PostMapping("/new")
-    ResponseEntity<TaskDto> createNewTask(@RequestBody TaskRequest taskRequest){
+    ResponseEntity<TaskDto> createNewTask(@RequestBody @Valid TaskRequest taskRequest){
         return new ResponseEntity<>(taskService.createNewTask(taskRequest),HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    ResponseEntity<TaskDto> updateTask(@RequestBody TaskRequest taskRequest, @PathVariable String id) {
+    ResponseEntity<TaskDto> updateTask(@RequestBody @Valid TaskRequest taskRequest, @PathVariable String id) {
         return new ResponseEntity<>(taskService.updateNewTask(taskRequest,UUID.fromString(id)),HttpStatus.OK);
     }
 
