@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 public record TaskRequest(
 
         @NotBlank(message = "La tarea debe tener un titulo")
-        @Size(min = 20,max = 50, message = "El titulo debe ser de minimo 20 caracteres")
+        @Size(min = 10,max = 50, message = "El titulo debe ser de minimo 20 caracteres")
         String title,
 
         @NotBlank(message = "Debe haber una descripcion de la tarea")
