@@ -10,7 +10,7 @@ public record TaskRequest(
         String title,
 
         @NotBlank(message = "Debe haber una descripcion de la tarea")
-        @Size(min = 50,max = 500,message = "La descrpcion debe ser de minimo 50 caracteres")
+        @Size(min = 10,max = 500,message = "La descrpcion debe ser de minimo 50 caracteres")
         String description,
 
         String status
