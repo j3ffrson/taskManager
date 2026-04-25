@@ -4,7 +4,9 @@ import cj.projects.taskmanager.persistence.entities.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -22,9 +24,12 @@ public class TaskEntity {
 
     private String title;
     private String description;
-    private LocalDateTime createAd;
-    private LocalDateTime updateAd;
-    private LocalDateTime deleteAd;
+
+    private LocalDate createAd;
+    private LocalTime createAdTime;
+
+    private LocalDate updateAd;
+    private LocalTime updateAdTime;
 
     @Enumerated(EnumType.STRING)
     private Status status;
