@@ -46,8 +46,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskDto> findAllTaskByAuthorPage(Pageable pageable, UUID id) {
-        Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByAuthorId(id,pageable);
+    public Page<TaskDto> findAllTaskByAuthorPage(Pageable pageable) {
+        Authentication context = SecurityContextHolder.getContext().getAuthentication();
+        assert context != null;
+        UserEntity author= userRepository.findByUsername(context.getName()).orElseThrow();
+        Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByAuthor(author,pageable);
         return tasks.map(TaskServiceImpl::getTaskDto);
     }
 
