@@ -9,11 +9,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, UUID> {
     Page<TaskEntity> findTaskEntitiesByStatus(Status status, Pageable pageable);
     Page<TaskEntity> findTaskEntitiesByAuthor(UserEntity author, Pageable pageable);
-    Page<TaskEntity> findTaskEntitiesByCreateAdDateBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable);
+
+    Page<TaskEntity> findTaskEntitiesByCreateAdBetween(LocalDate createAdAfter, LocalDate createAdBefore, Pageable page);
+
 }
