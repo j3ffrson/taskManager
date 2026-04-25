@@ -15,5 +15,7 @@ import java.util.UUID;
 public interface TaskRepository extends JpaRepository<TaskEntity, UUID> {
     Page<TaskEntity> findTaskEntitiesByStatus(Status status, Pageable pageable);
     Page<TaskEntity> findTaskEntitiesByAuthor(UserEntity author, Pageable pageable);
-    Page<TaskEntity> findTaskEntitiesByCreateAdDateBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable);
+
+    Page<TaskEntity> findTaskEntitiesByCreateAdBetween(LocalDate createAdAfter, LocalDate createAdBefore, Pageable page);
+
 }

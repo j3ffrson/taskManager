@@ -11,8 +11,9 @@ public class TaskDto {
     private String title;
     private String description;
     private String createAd;
+    private String timeCreateAd;
     private String updateAd;
-    private String deleteAd;
+    private String timeUpdateAd;
 
     private String status;
 
