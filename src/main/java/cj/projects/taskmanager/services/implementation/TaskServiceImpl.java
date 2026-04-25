@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,8 +56,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskDto> findAllTaskByCreateAdDateBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable) {
-        Page<TaskEntity> tasks = taskRepository.findTaskEntitiesByCreateAdDateBetween(createAdDateAfter,createAdDateBefore,pageable);
+    public Page<TaskDto> findAllTaskByCreateAdBetween(LocalDate createAdDateAfter, LocalDate createAdDateBefore, Pageable pageable) {
+        Page<TaskEntity> tasks = taskRepository
+                .findTaskEntitiesByCreateAdBetween(createAdDateAfter,createAdDateBefore,pageable);
         return tasks.map(TaskServiceImpl::getTaskDto);
     }
 
@@ -77,7 +79,8 @@ public class TaskServiceImpl implements TaskService {
                 .title(taskRequest.title())
                 .description(taskRequest.description())
                 .status(Status.NEW)
-                .createAd(LocalDateTime.now())
+                .createAd(LocalDate.now())
+                .createAdTime(LocalTime.now())
                 .author(user)
                 .build();
 
@@ -92,7 +95,8 @@ public class TaskServiceImpl implements TaskService {
         task.setTitle(taskRequest.title()==null?task.getTitle():taskRequest.title());
         task.setDescription(taskRequest.description()==null?task.getDescription():taskRequest.description());
         task.setStatus(taskRequest.status()==null?task.getStatus():Status.valueOf(taskRequest.status()));
-        task.setUpdateAd(LocalDateTime.now());
+        task.setUpdateAd(LocalDate.now());
+        task.setCreateAdTime(LocalTime.now());
         taskRepository.save(task);
         return getTaskDto(task);
     }
@@ -116,17 +120,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private static @NonNull TaskDto getTaskDto(TaskEntity task) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm");
         TaskDto dto = new TaskDto();
         dto.setUuid(task.getId());
         dto.setTitle(task.getTitle());
         dto.setDescription(task.getDescription());
         dto.setAuthor(getUserDto(task));
         dto.setStatus(task.getStatus() != null ? task.getStatus().name() : null);
-        dto.setCreateAd(task.getCreateAd() != null ? task.getCreateAd().format(format) : null);
-        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(format) : null);
-        dto.setDeleteAd(task.getDeleteAd() != null ? task.getDeleteAd().format(format) : null);
-
+        dto.setCreateAd(task.getCreateAd() != null ? task.getCreateAd().format(formatDate) : null);
+        dto.setTimeCreateAd(task.getCreateAdTime() != null ? task.getCreateAdTime().format(formatTime) : null);
+        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(formatTime) : null);
+        dto.setTimeUpdateAd(task.getUpdateAdTime()!=null?task.getUpdateAdTime().format(formatTime):null);
         return dto;
     }
 }
