@@ -40,6 +40,15 @@ public class TaskController {
 
     }
 
+    @GetMapping("/author")
+    ResponseEntity<Page<TaskDto>> getAllTaskByAuthor(@RequestParam(name = "page",defaultValue = "0") int pageNumber,
+                                                     @RequestParam(name = "size",defaultValue = "3") int pageSize){
+
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        return new ResponseEntity<>(taskService.findAllTaskByAuthorPage(pageable), HttpStatus.OK);
+
+    }
+
     @GetMapping("/{id}")
     ResponseEntity<TaskDto> getTaskById(@PathVariable String id){
         return new ResponseEntity<>(taskService.findTaskById(UUID.fromString(id)), HttpStatus.OK);
