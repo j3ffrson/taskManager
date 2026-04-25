@@ -1,6 +1,7 @@
 package cj.projects.taskmanager.controller;
 
 import cj.projects.taskmanager.services.TaskService;
+import cj.projects.taskmanager.services.dto.request.TaskDateBetweenFilterRequest;
 import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 import jakarta.validation.Valid;
@@ -12,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @RestController
@@ -46,6 +50,20 @@ public class TaskController {
 
         Pageable pageable= PageRequest.of(pageNumber,pageSize);
         return new ResponseEntity<>(taskService.findAllTaskByAuthorPage(pageable), HttpStatus.OK);
+
+    }
+
+    @PostMapping("/period/date")
+    ResponseEntity<Page<TaskDto>> getAllTaskByPeriodTime(@RequestParam(name = "page",defaultValue = "0") int pageNumber,
+                                                     @RequestParam(name = "size",defaultValue = "3") int pageSize,
+                                                         @RequestBody @Valid TaskDateBetweenFilterRequest taskDateBetweenFilterRequest){
+
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateStart= LocalDate.parse(taskDateBetweenFilterRequest.createAdDateAfter(),formatDate);
+        LocalDate dateEnd= LocalDate.parse(taskDateBetweenFilterRequest.createAdDateBefore(),formatDate);
+
+        return new ResponseEntity<>(taskService.findAllTaskByCreateAdBetween(dateStart,dateEnd,pageable), HttpStatus.OK);
 
     }
 
