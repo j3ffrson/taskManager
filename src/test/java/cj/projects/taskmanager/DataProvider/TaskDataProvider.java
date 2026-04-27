@@ -46,7 +46,7 @@ public class TaskDataProvider {
         taskEntity3= TaskEntity.builder()
                 .id(UUID.randomUUID())
                 .title("Tarea para test 3")
-                .status(Status.NEW)
+                .status(Status.STARTING)
                 .description("Tarea de prueba para test unitario")
                 .createAd(LocalDate.now())
                 .createAdTime(LocalTime.of(22,22))

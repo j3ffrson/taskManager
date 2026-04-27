@@ -1,6 +1,7 @@
 package cj.projects.taskmanager.services.implementation;
 
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
+import cj.projects.taskmanager.persistence.entities.enums.Status;
 import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
@@ -55,6 +56,20 @@ class TaskServiceImplTest {
 
     @Test
     void findAllTaskByStatusPageTest() {
+
+        Pageable pageable= PageRequest.of(1,3);
+        List<TaskEntity> taskList= List.of(getTaskEntity1(),getTaskEntity2());
+        List<TaskDto> taskDtoList= List.of(getTaskDto1(),getTaskDto2());
+        Page<TaskEntity> entityPage= new PageImpl<>(taskList,pageable,3);
+
+        when(taskRepository.findTaskEntitiesByStatus(Status.NEW,pageable)).thenReturn(entityPage);
+
+        Page<TaskDto> dtoPage= taskService.findAllTaskByStatusPage("NEW",pageable);
+
+        assertThat(dtoPage.getContent()).isEqualTo(taskDtoList);
+        assertThat(dtoPage.getContent().size()).isEqualTo(2);
+        assertThat(dtoPage.getContent().getFirst().getStatus()).isEqualTo(taskDtoList.getFirst().getStatus());
+
     }
 
     @Test
