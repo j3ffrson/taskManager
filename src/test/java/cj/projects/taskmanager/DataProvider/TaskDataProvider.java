@@ -89,5 +89,35 @@ public class TaskDataProvider {
         taskDto3.setTimeCreateAd(taskEntity3.getCreateAdTime().format(formatTime));
     }
 
+    public static TaskEntity getTaskEntity1() {
+        return taskEntity1;
+    }
 
+    public static TaskEntity getTaskEntity2() {
+        return taskEntity2;
+    }
+
+    public static TaskEntity getTaskEntity3() {
+        return taskEntity3;
+    }
+
+    public static TaskDto getTaskDto1() {
+        return taskDto1;
+    }
+
+    public static TaskDto getTaskDto2() {
+        return taskDto2;
+    }
+
+    public static TaskDto getTaskDto3() {
+        return taskDto3;
+    }
+
+    public static UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public static AuthorTaskDto getAuthorTaskDto() {
+        return authorTaskDto;
+    }
 }
