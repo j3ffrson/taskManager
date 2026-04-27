@@ -122,7 +122,7 @@ public class TaskServiceImpl implements TaskService {
         DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm");
         TaskDto dto = new TaskDto();
-        dto.setUuid(task.getId());
+        dto.setId(task.getId());
         dto.setTitle(task.getTitle());
         dto.setDescription(task.getDescription());
         dto.setAuthor(getUserDto(task));
