@@ -74,6 +74,30 @@ class TaskServiceImplTest {
 
     @Test
     void findAllTaskByAuthorPageTest() {
+        // Given
+        Pageable pageable = PageRequest.of(0, 5);
+        UserEntity author = getUser();
+        List<TaskEntity> taskList = List.of(getTaskEntity1(), getTaskEntity2());
+        List<TaskDto> taskDtoList = List.of(getTaskDto1(), getTaskDto2());
+        Page<TaskEntity> entityPage = new PageImpl<>(taskList, pageable, 2);
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getName()).thenReturn(author.getUsername());
+        when(userRepository.findByUsername(author.getUsername())).thenReturn(Optional.of(author));
+        when(taskRepository.findTaskEntitiesByAuthor(author, pageable)).thenReturn(entityPage);
+
+        // When
+        Page<TaskDto> dtoPage = taskService.findAllTaskByAuthorPage(pageable);
+
+        // Then
+        assertThat(dtoPage.getContent()).isEqualTo(taskDtoList);
+        assertThat(dtoPage.getContent().size()).isEqualTo(2);
+        assertThat(dtoPage.getContent().getFirst().getAuthor().getUsername()).isEqualTo(author.getUsername());
+        assertThat(dtoPage.getContent().get(1).getAuthor().getUsername()).isEqualTo(author.getUsername());
     }
 
     @Test
