@@ -225,5 +225,14 @@ class TaskServiceImplTest {
 
     @Test
     void deleteTaskByIdTest() {
+        // Given
+        UUID taskId = UUID.randomUUID();
+
+        // When
+        Optional<Void> result = taskService.deleteTaskById(taskId);
+
+        // Then
+        verify(taskRepository, times(1)).deleteById(taskId);
+        assertThat(result).isEmpty();
     }
 }
