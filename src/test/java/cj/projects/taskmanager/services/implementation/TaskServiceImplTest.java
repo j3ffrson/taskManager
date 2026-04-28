@@ -124,6 +124,20 @@ class TaskServiceImplTest {
 
     @Test
     void findTaskByIdTest() {
+        // Given
+        TaskEntity taskEntity = getTaskEntity1();
+        TaskDto taskDto = getTaskDto1();
+        UUID taskId = taskEntity.getId();
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(taskEntity));
+
+        // When
+        TaskDto foundTaskDto = taskService.findTaskById(taskId);
+
+        // Then
+        assertThat(foundTaskDto).isEqualTo(taskDto);
+        assertThat(foundTaskDto.getId()).isEqualTo(taskDto.getId());
+        assertThat(foundTaskDto.getTitle()).isEqualTo(taskDto.getTitle());
     }
 
     @Test
