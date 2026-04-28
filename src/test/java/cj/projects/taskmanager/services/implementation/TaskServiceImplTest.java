@@ -190,6 +190,37 @@ class TaskServiceImplTest {
 
     @Test
     void updateNewTaskTest() {
+        // Given
+        TaskEntity existingTaskEntity = getTaskEntity1();
+        UUID taskId = existingTaskEntity.getId();
+        TaskRequest updatedTaskRequest = new TaskRequest("Titulo Actualizado", "Descripcion Actualizada", Status.STARTING.name());
+
+        TaskEntity updatedTaskEntity = TaskEntity.builder()
+                .id(existingTaskEntity.getId())
+                .title(updatedTaskRequest.title())
+                .description(updatedTaskRequest.description())
+                .status(Status.valueOf(updatedTaskRequest.status()))
+                .createAd(existingTaskEntity.getCreateAd())
+                .createAdTime(existingTaskEntity.getCreateAdTime())
+                .author(existingTaskEntity.getAuthor())
+                .updateAd(LocalDate.now())
+                .updateAdTime(LocalTime.now())
+                .build();
+
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTaskEntity));
+        when(taskRepository.save(any(TaskEntity.class))).thenReturn(updatedTaskEntity);
+
+        // When
+        TaskDto resultTaskDto = taskService.updateNewTask(updatedTaskRequest, taskId);
+
+        // Then
+        assertThat(resultTaskDto).isNotNull();
+        assertThat(resultTaskDto.getId()).isEqualTo(taskId);
+        assertThat(resultTaskDto.getTitle()).isEqualTo(updatedTaskRequest.title());
+        assertThat(resultTaskDto.getDescription()).isEqualTo(updatedTaskRequest.description());
+        assertThat(resultTaskDto.getStatus()).isEqualTo(updatedTaskRequest.status());
+        assertThat(resultTaskDto.getUpdateAd()).isNotNull();
     }
 
     @Test
