@@ -1,9 +1,11 @@
 package cj.projects.taskmanager.services.implementation;
 
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
+import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Status;
 import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
+import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,12 +16,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static cj.projects.taskmanager.DataProvider.TaskDataProvider.*;
+import static cj.projects.taskmanager.DataProvider.UserDataProvider.getUser;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceImplTest {
@@ -142,6 +153,39 @@ class TaskServiceImplTest {
 
     @Test
     void createNewTaskTest() {
+        // Given
+        TaskRequest taskRequest = getTaskRequest();
+        UserEntity author = getUser();
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getName()).thenReturn(author.getUsername());
+        when(userRepository.findByUsername(author.getUsername())).thenReturn(Optional.of(author));
+
+        TaskEntity savedTaskEntity = TaskEntity.builder()
+                .id(UUID.randomUUID())
+                .title(taskRequest.title())
+                .description(taskRequest.description())
+                .status(Status.NEW)
+                .createAd(LocalDate.now())
+                .createAdTime(LocalTime.now())
+                .author(author)
+                .build();
+
+        when(taskRepository.save(any(TaskEntity.class))).thenReturn(savedTaskEntity);
+
+        // When
+        TaskDto createdTaskDto = taskService.createNewTask(taskRequest);
+
+        // Then
+        assertThat(createdTaskDto).isNotNull();
+        assertThat(createdTaskDto.getTitle()).isEqualTo(taskRequest.title());
+        assertThat(createdTaskDto.getDescription()).isEqualTo(taskRequest.description());
+        assertThat(createdTaskDto.getStatus()).isEqualTo(Status.NEW.name());
+        assertThat(createdTaskDto.getAuthor().getUsername()).isEqualTo(author.getUsername());
     }
 
     @Test
