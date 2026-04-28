@@ -95,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskRequest.description()==null?task.getDescription():taskRequest.description());
         task.setStatus(taskRequest.status()==null?task.getStatus():Status.valueOf(taskRequest.status()));
         task.setUpdateAd(LocalDate.now());
-        task.setCreateAdTime(LocalTime.now());
+        task.setUpdateAdTime(LocalTime.now());
         taskRepository.save(task);
         return getTaskDto(task);
     }
