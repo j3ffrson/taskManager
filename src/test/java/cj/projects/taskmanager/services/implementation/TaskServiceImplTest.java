@@ -102,6 +102,24 @@ class TaskServiceImplTest {
 
     @Test
     void findAllTaskByCreateAdDateBetweenTest() {
+        // Given
+        Pageable pageable = PageRequest.of(0, 5);
+        LocalDate startDate = LocalDate.now().minusDays(1);
+        LocalDate endDate = LocalDate.now().plusDays(1);
+
+        List<TaskEntity> taskList = List.of(getTaskEntity1(), getTaskEntity2(), getTaskEntity3());
+        List<TaskDto> taskDtoList = List.of(getTaskDto1(), getTaskDto2(), getTaskDto3());
+        Page<TaskEntity> entityPage = new PageImpl<>(taskList, pageable, 3);
+
+        when(taskRepository.findTaskEntitiesByCreateAdBetween(startDate, endDate, pageable)).thenReturn(entityPage);
+
+        // When
+        Page<TaskDto> dtoPage = taskService.findAllTaskByCreateAdBetween(startDate, endDate, pageable);
+
+        // Then
+        assertThat(dtoPage.getContent()).isEqualTo(taskDtoList);
+        assertThat(dtoPage.getContent().size()).isEqualTo(3);
+        assertThat(dtoPage.getContent().getFirst().getCreateAd()).isEqualTo(taskDtoList.getFirst().getCreateAd());
     }
 
     @Test
