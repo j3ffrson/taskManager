@@ -129,7 +129,7 @@ public class TaskServiceImpl implements TaskService {
         dto.setStatus(task.getStatus() != null ? task.getStatus().name() : null);
         dto.setCreateAd(task.getCreateAd() != null ? task.getCreateAd().format(formatDate) : null);
         dto.setTimeCreateAd(task.getCreateAdTime() != null ? task.getCreateAdTime().format(formatTime) : null);
-        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(formatTime) : null);
+        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(formatDate) : null);
         dto.setTimeUpdateAd(task.getUpdateAdTime()!=null?task.getUpdateAdTime().format(formatTime):null);
         return dto;
     }
