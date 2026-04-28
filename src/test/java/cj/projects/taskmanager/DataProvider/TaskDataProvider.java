@@ -3,6 +3,7 @@ package cj.projects.taskmanager.DataProvider;
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Status;
+import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.AuthorTaskDto;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 
@@ -119,5 +120,9 @@ public class TaskDataProvider {
 
     public static AuthorTaskDto getAuthorTaskDto() {
         return authorTaskDto;
+    }
+
+    public static TaskRequest getTaskRequest() {
+        return new TaskRequest("Nueva tarea de prueba", "Descripcion de la nueva tarea de prueba", "NEW");
     }
 }
