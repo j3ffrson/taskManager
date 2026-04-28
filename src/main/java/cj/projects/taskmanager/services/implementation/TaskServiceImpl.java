@@ -95,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskRequest.description()==null?task.getDescription():taskRequest.description());
         task.setStatus(taskRequest.status()==null?task.getStatus():Status.valueOf(taskRequest.status()));
         task.setUpdateAd(LocalDate.now());
-        task.setCreateAdTime(LocalTime.now());
+        task.setUpdateAdTime(LocalTime.now());
         taskRepository.save(task);
         return getTaskDto(task);
     }
@@ -122,14 +122,14 @@ public class TaskServiceImpl implements TaskService {
         DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm");
         TaskDto dto = new TaskDto();
-        dto.setUuid(task.getId());
+        dto.setId(task.getId());
         dto.setTitle(task.getTitle());
         dto.setDescription(task.getDescription());
         dto.setAuthor(getUserDto(task));
         dto.setStatus(task.getStatus() != null ? task.getStatus().name() : null);
         dto.setCreateAd(task.getCreateAd() != null ? task.getCreateAd().format(formatDate) : null);
         dto.setTimeCreateAd(task.getCreateAdTime() != null ? task.getCreateAdTime().format(formatTime) : null);
-        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(formatTime) : null);
+        dto.setUpdateAd(task.getUpdateAd() != null ? task.getUpdateAd().format(formatDate) : null);
         dto.setTimeUpdateAd(task.getUpdateAdTime()!=null?task.getUpdateAdTime().format(formatTime):null);
         return dto;
     }
