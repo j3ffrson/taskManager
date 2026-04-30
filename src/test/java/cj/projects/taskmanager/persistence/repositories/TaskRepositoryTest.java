@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
@@ -39,7 +42,9 @@ class TaskRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        this.author= getUserEntity();
+        taskRepository.deleteAll();
+
+        author= getUserEntity();
         userRepository.save(author);
 
         task1= getTaskEntity1NonId();
@@ -58,12 +63,13 @@ class TaskRepositoryTest {
     @Test
     void findAllTaskTest(){
 
-        List<TaskEntity> resultList= taskRepository.findAll();
+        Pageable pageable=PageRequest.of(0,3);
+        Page<TaskEntity> taskPage= taskRepository.findAll(pageable);
 
-        assertThat(resultList).isNotNull().hasSize(3);
-        assertThat(resultList.getFirst().getTitle()).isEqualTo(task1.getTitle());
-        assertThat(resultList.get(1).getTitle()).isEqualTo(task2.getTitle());
-        assertThat(resultList.getLast().getTitle()).isEqualTo(task3.getTitle());
+        assertThat(taskPage.getTotalElements()).isEqualTo(3);
+        assertThat(taskPage.getContent().getFirst().getTitle()).isEqualTo(task1.getTitle());
+        assertThat(taskPage.getContent().get(1).getTitle()).isEqualTo(task2.getTitle());
+        assertThat(taskPage.getContent().get(2).getTitle()).isEqualTo(task3.getTitle());
 
     }
 
