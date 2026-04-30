@@ -1,10 +1,59 @@
 package cj.projects.taskmanager.persistence.repositories;
 
+import cj.projects.taskmanager.persistence.entities.TaskEntity;
+import cj.projects.taskmanager.persistence.entities.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
+import static cj.projects.taskmanager.DataProvider.TaskDataProvider.*;
+import static org.assertj.core.api.Assertions.*;
+
+@SpringBootTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TaskRepositoryTest {
+
+    @Container
+    @ServiceConnection
+    private static PostgreSQLContainer postgreSQLContainer=
+            new PostgreSQLContainer("postgres:latest");
+    @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    private UserEntity author;
+    private TaskEntity task1;
+    private TaskEntity task2;
+    private TaskEntity task3;
+
+    @BeforeEach
+    void setUp() {
+
+        this.author= getUserEntity();
+        userRepository.save(author);
+
+        task1= getTaskEntity1NonId();
+        task2= getTaskEntity2NonId();
+        task3= getTaskEntity3NonId();
+
+        task1.setAuthor(author);
+        task2.setAuthor(author);
+        task3.setAuthor(author);
+
+        taskRepository.saveAll(List.of(task1,task2,task3));
+    }
+
+
 
     @Test
     void findAllTaskTest(){
