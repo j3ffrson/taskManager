@@ -2,6 +2,7 @@ package cj.projects.taskmanager.persistence.repositories;
 
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
+import cj.projects.taskmanager.persistence.entities.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,16 @@ class TaskRepositoryTest {
 
     @Test
     void findTaskEntitiesByStatus() {
+
+        Pageable pageable=PageRequest.of(0,3);
+        Page<TaskEntity> taskPage= taskRepository.findTaskEntitiesByStatus(Status.NEW,pageable);
+
+        assertThat(taskPage).isNotNull();
+        assertThat(taskPage.getTotalElements()).isEqualTo(2);
+        assertThat(taskPage.getTotalPages()).isEqualTo(1);
+        assertThat(taskPage.getContent().getFirst().getStatus()).isEqualTo(Status.NEW);
+        assertThat(taskPage.getContent().getLast().getStatus()).isEqualTo(Status.NEW);
+
     }
 
     @Test
