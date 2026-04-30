@@ -57,6 +57,14 @@ class TaskRepositoryTest {
 
     @Test
     void findAllTaskTest(){
+
+        List<TaskEntity> resultList= taskRepository.findAll();
+
+        assertThat(resultList).isNotNull().hasSize(3);
+        assertThat(resultList.getFirst().getTitle()).isEqualTo(task1.getTitle());
+        assertThat(resultList.get(1).getTitle()).isEqualTo(task2.getTitle());
+        assertThat(resultList.getLast().getTitle()).isEqualTo(task3.getTitle());
+
     }
 
     @Test
