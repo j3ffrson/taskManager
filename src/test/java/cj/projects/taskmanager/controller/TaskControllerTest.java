@@ -93,6 +93,29 @@ class TaskControllerTest {
 
     @Test
     void getAllTaskByStatusTest() {
+
+
+        TaskDto taskDto1= getTaskDto1();
+        TaskDto taskDto2= getTaskDto2();
+        TaskDto taskDto3= getTaskDto3();
+
+        taskDto1.setId(task1.getId());
+        taskDto2.setId(task2.getId());
+        taskDto3.setId(task3.getId());
+
+        List<TaskDto> dtoList=List.of(taskDto1,taskDto2,taskDto3);
+        restTestClient.get().uri("/api/tasks/status/NEW").header("Api-Version", "1")
+                .exchange()
+                .expectAll(
+                        spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
+                        spect -> spect.expectStatus().isOk(),
+                        spect -> spect.expectBody(Map.class),
+                        spect -> spect.expectBody().jsonPath("$.content").isArray(),
+                        spect -> spect.expectBody().jsonPath("$.page.number").isEqualTo(0),
+                        spect -> spect.expectBody().jsonPath("$.page.totalElements").isEqualTo(2),
+                        spect -> spect.expectBody().jsonPath("$.page.size").isEqualTo(3)
+                );
+
     }
 
     @Test
