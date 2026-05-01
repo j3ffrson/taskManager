@@ -165,6 +165,14 @@ class TaskRepositoryTest {
 
     @Test
     void deleteTaskTestById(){
+
+        UUID taskId = task1.getId();
+        assertThat(taskRepository.existsById(taskId)).isTrue();
+
+        taskRepository.deleteById(taskId);
+
+        assertThat(taskRepository.existsById(taskId)).isFalse();
+
     }
 
 
