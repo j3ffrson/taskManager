@@ -149,6 +149,18 @@ class TaskRepositoryTest {
 
     @Test
     void updateTaskTestById(){
+
+        TaskEntity taskToUpdate = taskRepository.findById(task1.getId()).orElseThrow();
+        String newTitle = "Tarea actualizada";
+        taskToUpdate.setTitle(newTitle);
+        taskToUpdate.setStatus(Status.FINISHED);
+
+        TaskEntity updatedTask = taskRepository.save(taskToUpdate);
+
+        assertThat(updatedTask).isNotNull();
+        assertThat(updatedTask.getTitle()).isEqualTo(newTitle);
+        assertThat(updatedTask.getStatus()).isEqualTo(Status.FINISHED);
+
     }
 
     @Test
