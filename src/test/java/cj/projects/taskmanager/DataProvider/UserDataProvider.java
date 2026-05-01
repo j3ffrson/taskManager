@@ -36,6 +36,7 @@ public class UserDataProvider {
                 .email("chaustrejefferson@gmail.com")
                 .password("passtest")
                 .roles(Set.of(admin))
+                .tasks(Collections.emptyList())
                 .isEnabled(true)
                 .isAccountNonExpired(true)
                 .isCredentialsNonExpired(true)

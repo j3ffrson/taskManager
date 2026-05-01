@@ -28,6 +28,15 @@ public class TaskDataProvider {
                 .author(UserDataProvider.getUser())
                 .build();
     }
+    public static TaskEntity getTaskEntity1NonId() {
+        return TaskEntity.builder()
+                .title("Tarea para test 1")
+                .status(Status.NEW)
+                .description("Tarea de prueba para test unitario")
+                .createAd(LocalDate.now())
+                .createAdTime(LocalTime.of(22,22))
+                .build();
+    }
 
     public static TaskEntity getTaskEntity2() {
         return TaskEntity.builder()
@@ -40,6 +49,15 @@ public class TaskDataProvider {
                 .author(UserDataProvider.getUser())
                 .build();
     }
+    public static TaskEntity getTaskEntity2NonId() {
+        return TaskEntity.builder()
+                .title("Tarea para test 2")
+                .status(Status.NEW)
+                .description("Tarea de prueba para test unitario")
+                .createAd(LocalDate.now())
+                .createAdTime(LocalTime.of(22,22))
+                .build();
+    }
 
     public static TaskEntity getTaskEntity3() {
         return TaskEntity.builder()
@@ -50,6 +68,15 @@ public class TaskDataProvider {
                 .createAd(LocalDate.now())
                 .createAdTime(LocalTime.of(22,22))
                 .author(UserDataProvider.getUser())
+                .build();
+    }
+    public static TaskEntity getTaskEntity3NonId() {
+        return TaskEntity.builder()
+                .title("Tarea para test 3")
+                .status(Status.STARTING)
+                .description("Tarea de prueba para test unitario")
+                .createAd(LocalDate.now())
+                .createAdTime(LocalTime.of(22,22))
                 .build();
     }
 
