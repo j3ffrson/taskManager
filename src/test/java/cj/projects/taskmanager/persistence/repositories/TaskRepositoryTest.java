@@ -133,6 +133,18 @@ class TaskRepositoryTest {
 
     @Test
     void saveTaskTest(){
+
+        TaskEntity task4 = getTaskEntity3NonId();
+        task4.setTitle("Nueva tarea guardada");
+        task4.setAuthor(author);
+
+        TaskEntity savedTask = taskRepository.save(task4);
+
+        assertThat(savedTask).isNotNull();
+        assertThat(savedTask.getId()).isNotNull();
+        assertThat(savedTask.getTitle()).isEqualTo("Nueva tarea guardada");
+        assertThat(savedTask.getAuthor().getId()).isEqualTo(author.getId());
+
     }
 
     @Test
