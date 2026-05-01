@@ -16,7 +16,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static cj.projects.taskmanager.DataProvider.TaskDataProvider.*;
 import static org.assertj.core.api.Assertions.*;
@@ -76,6 +78,15 @@ class TaskRepositoryTest {
 
     @Test
     void findTaskEntitiesById() {
+
+        TaskEntity task= taskRepository.findById(task2.getId()).orElseThrow();
+
+        assertThat(task).isNotNull();
+        assertThat(task.getId()).isEqualTo(task2.getId());
+        assertThat(task.getTitle()).isEqualTo(task2.getTitle());
+        assertThat(task.getDescription()).isEqualTo(task2.getDescription());
+        assertThat(task.getStatus()).isEqualTo(task2.getStatus());
+
     }
 
     @Test
