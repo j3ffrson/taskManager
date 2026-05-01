@@ -118,6 +118,17 @@ class TaskRepositoryTest {
 
     @Test
     void findTaskEntitiesByCreateAdBetween() {
+
+        LocalDate startDate = LocalDate.now().minusDays(1);
+        LocalDate endDate = LocalDate.now().plusDays(1);
+        Pageable pageable = PageRequest.of(0, 3);
+
+        Page<TaskEntity> tasksPage = taskRepository.findTaskEntitiesByCreateAdBetween(startDate, endDate, pageable);
+
+        assertThat(tasksPage).isNotNull();
+        assertThat(tasksPage.getTotalElements()).isEqualTo(3);
+        assertThat(tasksPage.getContent()).hasSize(3);
+
     }
 
     @Test
