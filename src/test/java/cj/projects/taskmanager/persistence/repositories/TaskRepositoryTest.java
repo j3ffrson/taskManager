@@ -105,6 +105,15 @@ class TaskRepositoryTest {
 
     @Test
     void findTaskEntitiesByAuthor() {
+
+        Pageable pageable=PageRequest.of(0,3);
+        Page<TaskEntity> tasksAuthor = taskRepository.findTaskEntitiesByAuthor(author,pageable);
+
+        assertThat(tasksAuthor).isNotNull();
+        assertThat(tasksAuthor.getTotalElements()).isEqualTo(3);
+        assertThat(tasksAuthor.getContent()).hasSize(3);
+        assertThat(tasksAuthor.getContent().getFirst().getAuthor().getId()).isEqualTo(author.getId());
+
     }
 
     @Test
