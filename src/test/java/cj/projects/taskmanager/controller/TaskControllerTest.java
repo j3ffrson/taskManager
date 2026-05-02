@@ -12,6 +12,7 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTe
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -42,6 +43,9 @@ class TaskControllerTest {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private UserEntity author;
     private TaskEntity task1;
     private TaskEntity task2;
@@ -52,6 +56,8 @@ class TaskControllerTest {
         taskRepository.deleteAll();
 
         author= getUserEntity();
+        author.setPassword(passwordEncoder.encode("passtest"));
+
         userRepository.save(author);
 
         task1= getTaskEntity1NonId();
@@ -101,6 +107,18 @@ class TaskControllerTest {
 
     @Test
     void getAllTaskByAuthorTest() {
+        restTestClient.get().uri("/api/tasks/author").header("Api-Version", "1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
+                .exchange()
+                .expectAll(
+                        spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
+                        spect -> spect.expectStatus().isOk(),
+                        spect -> spect.expectBody(Map.class),
+                        spect -> spect.expectBody().jsonPath("$.content").isArray(),
+                        spect -> spect.expectBody().jsonPath("$.content[0].author.username").isEqualTo(author.getUsername()),
+                        spect -> spect.expectBody().jsonPath("$.content[0].author.name").isEqualTo(author.getName()),
+                        spect -> spect.expectBody().jsonPath("$.page.totalElements").isEqualTo(3)
+                );
     }
 
     @Test
