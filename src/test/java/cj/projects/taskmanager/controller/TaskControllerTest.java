@@ -68,6 +68,10 @@ class TaskControllerTest {
         task2.setAuthor(author);
         task3.setAuthor(author);
 
+        task1.setCreateAd(LocalDate.of(2026,3,30));
+        task2.setCreateAd(LocalDate.of(2026,4,1));
+        task3.setCreateAd(LocalDate.of(2026,4,2));
+
         taskRepository.saveAll(List.of(task1,task2,task3));
 
     }
