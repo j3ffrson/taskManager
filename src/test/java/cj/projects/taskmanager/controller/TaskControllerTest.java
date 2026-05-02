@@ -69,15 +69,6 @@ class TaskControllerTest {
     @Test
     void getAllTaskTest() {
 
-        TaskDto taskDto1= getTaskDto1();
-        TaskDto taskDto2= getTaskDto2();
-        TaskDto taskDto3= getTaskDto3();
-
-        taskDto1.setId(task1.getId());
-        taskDto2.setId(task2.getId());
-        taskDto3.setId(task3.getId());
-
-        List<TaskDto> dtoList=List.of(taskDto1,taskDto2,taskDto3);
         restTestClient.get().uri("/api/tasks").header("Api-Version", "1")
                 .exchange()
                 .expectAll(
@@ -94,16 +85,6 @@ class TaskControllerTest {
     @Test
     void getAllTaskByStatusTest() {
 
-
-        TaskDto taskDto1= getTaskDto1();
-        TaskDto taskDto2= getTaskDto2();
-        TaskDto taskDto3= getTaskDto3();
-
-        taskDto1.setId(task1.getId());
-        taskDto2.setId(task2.getId());
-        taskDto3.setId(task3.getId());
-
-        List<TaskDto> dtoList=List.of(taskDto1,taskDto2,taskDto3);
         restTestClient.get().uri("/api/tasks/status/NEW").header("Api-Version", "1")
                 .exchange()
                 .expectAll(
