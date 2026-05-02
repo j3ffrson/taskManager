@@ -123,6 +123,21 @@ class TaskControllerTest {
 
     @Test
     void getAllTaskByPeriodTimeTest() {
+
+        restTestClient.post().uri("/api/tasks/period/date").header("Api-Version","1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new TaskDateBetweenFilterRequest("2026-04-01","2026-04-03"))
+                .exchange()
+                .expectAll(
+                        spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
+                        spect -> spect.expectStatus().isOk(),
+                        spect -> spect.expectBody(Map.class),
+                        spect -> spect.expectBody().jsonPath("$.content").isArray(),
+                        spect -> spect.expectBody().jsonPath("$.page.totalElements").isEqualTo(2),
+                        spect -> spect.expectBody().jsonPath("$.content[0].createAd").isEqualTo("01/04/2026"),
+                        spect -> spect.expectBody().jsonPath("$.content[1].createAd").isEqualTo("02/04/2026")
+                );
+
     }
 
     @Test
