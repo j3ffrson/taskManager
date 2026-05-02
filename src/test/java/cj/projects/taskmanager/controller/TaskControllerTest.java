@@ -142,6 +142,16 @@ class TaskControllerTest {
 
     @Test
     void getTaskByIdTest() {
+
+        restTestClient.get().uri("/api/tasks/"+task1.getId().toString()).header("Api-Version","1")
+                .exchange()
+                .expectAll(
+                        expect-> expect.expectHeader().contentType(MediaType.APPLICATION_JSON),
+                        expect -> expect.expectStatus().isOk(),
+                        expect -> expect.expectBody(TaskDto.class),
+                        expect -> expect.expectBody().jsonPath("$.id").isEqualTo(task1.getId().toString())
+                );
+
     }
 
     @Test
