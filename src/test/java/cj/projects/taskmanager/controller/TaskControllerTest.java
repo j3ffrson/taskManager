@@ -196,5 +196,14 @@ class TaskControllerTest {
 
     @Test
     void deleteTaskTest() {
+
+        restTestClient.delete().uri("/api/tasks/delete/"+task1.getId().toString()).header("Api-Version","1")
+                .exchange()
+                .expectAll(
+                        expect -> expect.expectBody().isEmpty(),
+                        expect -> expect.expectStatus().isNoContent()
+
+                );
+
     }
 }
