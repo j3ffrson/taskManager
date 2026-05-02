@@ -175,6 +175,23 @@ class TaskControllerTest {
 
     @Test
     void updateTaskTest() {
+
+        TaskRequest taskRequest = new TaskRequest(null,null,"FINISHED");
+        restTestClient.put().uri("/api/tasks/update/"+task1.getId().toString()).header("Api-Version","1")
+                .headers(header->header.setBasicAuth("jeffer","passtest"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(taskRequest)
+                .exchange()
+                .expectAll(
+                        expect -> expect.expectHeader().contentType(MediaType.APPLICATION_JSON),
+                        expect -> expect.expectStatus().isOk(),
+                        expect -> expect.expectBody(TaskDto.class),
+                        expect -> expect.expectBody().jsonPath("$.id").isEqualTo(task1.getId().toString()),
+                        expect -> expect.expectBody().jsonPath("$.title").isEqualTo(task1.getTitle()),
+                        expect -> expect.expectBody().jsonPath("$.status").isEqualTo(Status.FINISHED.name()),
+                        expect -> expect.expectBody().jsonPath("$.updateAd").isNotEmpty()
+                );
+
     }
 
     @Test
