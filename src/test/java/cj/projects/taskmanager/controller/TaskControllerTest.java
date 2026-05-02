@@ -2,8 +2,11 @@ package cj.projects.taskmanager.controller;
 
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
+import cj.projects.taskmanager.persistence.entities.enums.Status;
 import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
+import cj.projects.taskmanager.services.dto.request.TaskDateBetweenFilterRequest;
+import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
