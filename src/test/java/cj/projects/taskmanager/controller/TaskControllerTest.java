@@ -156,6 +156,21 @@ class TaskControllerTest {
 
     @Test
     void createNewTaskTest() {
+
+        TaskRequest taskRequest = getTaskRequest();
+        restTestClient.post().uri("/api/tasks/new").header("Api-Version","1")
+                .headers(header->header.setBasicAuth("jeffer","passtest"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(taskRequest)
+                .exchange()
+                .expectAll(
+                        expect -> expect.expectHeader().contentType(MediaType.APPLICATION_JSON),
+                        expect -> expect.expectStatus().isCreated(),
+                        expect -> expect.expectBody(TaskDto.class),
+                        expect -> expect.expectBody().jsonPath("$.id").isNotEmpty(),
+                        expect -> expect.expectBody().jsonPath("$.title").isEqualTo(taskRequest.title())
+                );
+
     }
 
     @Test
