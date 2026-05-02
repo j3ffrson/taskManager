@@ -4,7 +4,6 @@ import cj.projects.taskmanager.persistence.entities.PermissionEntity;
 import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Roles;
-import lombok.Getter;
 
 import java.util.Collections;
 import java.util.Set;
