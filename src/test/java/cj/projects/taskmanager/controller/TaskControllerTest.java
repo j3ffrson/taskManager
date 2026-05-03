@@ -58,11 +58,11 @@ class TaskControllerTest {
     void setUp() {
 
         taskRepository.deleteAll();
+        userRepository.deleteAll();
 
-        author= getUserEntity();
+        author = getUserEntity();
         author.setPassword(passwordEncoder.encode("passtest"));
-
-        userRepository.save(author);
+        author = userRepository.save(author);
 
         task1= getTaskEntity1NonId();
         task2= getTaskEntity2NonId();
