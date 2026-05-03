@@ -44,11 +44,11 @@ class TaskRepositoryTest {
 
     @BeforeEach
     void setUp() {
-
+        
         taskRepository.deleteAll();
+        userRepository.deleteAll();
 
-        author= getUserEntity();
-        userRepository.save(author);
+        author = userRepository.save(getUserEntity());
 
         task1= getTaskEntity1NonId();
         task2= getTaskEntity2NonId();
