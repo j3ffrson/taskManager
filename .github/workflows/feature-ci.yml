@@ -2,7 +2,7 @@ name: Auto Merge Feature PRs
 
 on:
   workflow_run:
-    workflows: ["develop-ci"]
+    workflows: ["CI Pipeline"]
     types:
       - completed
 
