@@ -1,0 +1,19 @@
+name: Auto Merge Feature Branch
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+
+    if: startsWith(github.head_ref, 'feature/')
+
+    steps:
+      - name: Enable auto-merge
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          merge-method: squash
+          pull-request-number: ${{ github.event.pull_request.number }}
