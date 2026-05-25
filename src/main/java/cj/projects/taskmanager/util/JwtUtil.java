@@ -20,7 +20,7 @@ public class JwtUtil {
     @Value("${spring.security.jwt.user.generator}")
     private String userGenerator;
 
-    private String generateToken(Authentication authentication){
+    public String generateToken(Authentication authentication){
         Algorithm algorithm= Algorithm.HMAC256(secretKey);
         String username= authentication.getName();
         String permmissions= authentication.getAuthorities()
