@@ -1,7 +1,11 @@
 package cj.projects.taskmanager.services.implementation;
 
+import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
+import cj.projects.taskmanager.persistence.entities.enums.Roles;
+import cj.projects.taskmanager.persistence.repositories.RoleRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
+import cj.projects.taskmanager.services.dto.request.AuthCreateUserRequest;
 import cj.projects.taskmanager.services.dto.request.AuthLoginRequest;
 import cj.projects.taskmanager.services.dto.response.AuthResponse;
 import cj.projects.taskmanager.util.JwtUtil;
@@ -22,12 +26,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -66,6 +72,40 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 true
         );
 
+    }
+
+    public AuthResponse createUser(@Valid AuthCreateUserRequest authCreateUserRequest){
+
+        List<String> roleList= authCreateUserRequest.roleRequest().roles();
+        List<Roles> roles= roleList.stream().map(Roles::valueOf).toList();
+        Set<RoleEntity> roleEntities= roleRepository.findRoleEntitiesByNameIn(roles);
+
+        UserEntity user= UserEntity.builder()
+                .name(authCreateUserRequest.name())
+                .lastName(authCreateUserRequest.lastName())
+                .email(authCreateUserRequest.email())
+                .username(authCreateUserRequest.username())
+                .password(passwordEncoder.encode(authCreateUserRequest.password()))
+                .roles(roleEntities)
+                .build();
+
+        UserEntity newUser= userRepository.save(user);
+
+        List<SimpleGrantedAuthority> newAuthorities= new ArrayList<>();
+
+        newUser.getRoles().forEach(role->{
+            newAuthorities.add(new SimpleGrantedAuthority(role.getName().name()));
+        });
+
+        newUser.getRoles().stream()
+                .flatMap(role->role.getListaPermisos().stream())
+                .forEach(permission->newAuthorities.add(new SimpleGrantedAuthority(permission.getName())));
+
+        Authentication authentication= new UsernamePasswordAuthenticationToken(newUser,newUser.getPassword(),newAuthorities);
+        String token= jwtUtil.generateToken(authentication);
+
+        return new AuthResponse(newUser.getUsername(), roleList, token, true
+        );
     }
 
     private Authentication authenticate(String username,String password){
