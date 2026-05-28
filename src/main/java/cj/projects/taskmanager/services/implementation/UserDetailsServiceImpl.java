@@ -44,7 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> authorities= new ArrayList<>();
 
         user.getRoles().forEach(roles->{
-            authorities.add(new SimpleGrantedAuthority(roles.getName().name()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_".concat(roles.getName().name())));
         });
 
         user.getRoles().stream()
@@ -67,7 +67,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new AuthResponse(
                 username,
                 roles.stream().filter(role->role.startsWith("ROLE_")).toList()
-                        .stream().map(role->role.replace("ROLE_",",")).toList(),
+                        .stream().map(role->role.replace("ROLE_","")).toList(),
                 token,
                 true
         );
