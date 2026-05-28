@@ -8,7 +8,6 @@ public record AuthCreateUserRequest(
         @NotBlank String name,
         @NotBlank String lastName,
         @NotBlank @Email String email,
-
         @NotBlank String username,
         @NotBlank String password,
         @Valid AuthCreateRoleRequest roleRequest

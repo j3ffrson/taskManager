@@ -87,6 +87,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .username(authCreateUserRequest.username())
                 .password(passwordEncoder.encode(authCreateUserRequest.password()))
                 .roles(roleEntities)
+                .isEnabled(true)
+                .isAccountNonExpired(true)
+                .isCredentialsNonExpired(true)
+                .isAccountNonLocked(true)
                 .build();
 
         UserEntity newUser= userRepository.save(user);
