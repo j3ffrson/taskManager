@@ -24,6 +24,8 @@ public class JwtUtil {
     private String secretKey;
     @Value("${spring.security.jwt.user.generator}")
     private String userGenerator;
+    @Value("${spring.security.jwt.expiration.time}")
+    private long expirationTime;
 
     public String generateToken(Authentication authentication){
         Algorithm algorithm= Algorithm.HMAC256(secretKey);
@@ -35,7 +37,7 @@ public class JwtUtil {
                 .withSubject(username)
                 .withClaim("permissions", permmissions)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis()+ TimeUnit.HOURS.toMillis(3)))
+                .withExpiresAt(new Date(System.currentTimeMillis()+ TimeUnit.HOURS.toMillis(expirationTime)))
                 .withJWTId(UUID.randomUUID().toString())
                 .withNotBefore(new Date(System.currentTimeMillis()))
                 .sign(algorithm);
