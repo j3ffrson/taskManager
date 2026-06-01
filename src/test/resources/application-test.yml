@@ -1,0 +1,11 @@
+spring:
+  security:
+    jwt:
+      private:
+        key: "test_secret_key_for_jwt_that_should_be_long_enough"
+      user:
+        generator: "test_generator"
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/testdb"
+    username: "test"
+    password: "test"
