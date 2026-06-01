@@ -24,7 +24,7 @@ public class UserDataProvider {
         permissions.add(delete);
 
         RoleEntity adminRole = RoleEntity.builder()
-                .name(Roles.USER)
+                .name(Roles.ADMIN)
                 .listaPermisos(permissions)
                 .build();
 
