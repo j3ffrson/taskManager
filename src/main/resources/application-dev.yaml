@@ -11,6 +11,10 @@ spring:
   flyway:
     enabled: false
   security:
-    user:
-      name: ${SECURITY_USER}
-      password: ${SECURITY_PASSWORD}
+    jwt:
+      private:
+        key: ${JWT_PRIVATE_KEY}
+      user:
+        generator: ${JWT_USER_GENERATOR}
+      expiration:
+        time: ${JWT_TOKEN_EXPIRATION_HOURS}
