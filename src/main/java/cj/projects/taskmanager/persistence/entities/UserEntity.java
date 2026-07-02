@@ -37,7 +37,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "author",orphanRemoval = true,fetch = FetchType.LAZY)
     private List<TaskEntity> tasks= new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "author_roles",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
