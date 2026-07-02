@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults())
                 .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
                 .addFilterBefore(new TokenValidator(jwtUtil,authEntryPoint), BasicAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
