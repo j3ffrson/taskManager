@@ -10,7 +10,7 @@ import cj.projects.taskmanager.services.dto.request.AuthLoginRequest;
 import cj.projects.taskmanager.services.dto.response.AuthResponse;
 import cj.projects.taskmanager.util.JwtUtil;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -102,7 +102,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> newAuthorities= new ArrayList<>();
 
         newUser.getRoles().forEach(role->{
-            newAuthorities.add(new SimpleGrantedAuthority(role.getName().name()));
+            newAuthorities.add(new SimpleGrantedAuthority("ROLE_"+role.getName().name()));
         });
 
         newUser.getRoles().stream()
@@ -119,9 +119,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserEntity createOAuth2User(OAuth2User oAuth2User){
 
         UserEntity oauthUser= UserEntity.builder()
-                .id(UUID.randomUUID())
-                .name("given_name")
-                .lastName("family_name")
+                .name(oAuth2User.getAttribute("given_name"))
+                .lastName(oAuth2User.getAttribute("family_name"))
                 .email(oAuth2User.getAttribute("email"))
                 .username(oAuth2User.getAttribute("name").toString().replace(" ","."))
                 .password(null)
