@@ -7,7 +7,7 @@ spring:
     url: ${DATABASE_URL}
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
   flyway:
     enabled: false
   security:
@@ -28,3 +28,6 @@ spring:
               - openid
               - profile
               - email
+logging:
+  level:
+    org.springframework.security: TRACE
