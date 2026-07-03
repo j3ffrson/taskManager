@@ -29,7 +29,7 @@ public class JwtUtil {
 
     public String generateToken(Authentication authentication){
         Algorithm algorithm= Algorithm.HMAC256(secretKey);
-        String username= authentication.getName();
+        String username= authentication.getName().toString();
         String permmissions= authentication.getAuthorities()
                 .stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         return JWT.create()
