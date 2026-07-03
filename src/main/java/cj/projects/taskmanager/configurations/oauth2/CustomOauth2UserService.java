@@ -1,8 +1,9 @@
-package cj.projects.taskmanager.configurations;
+package cj.projects.taskmanager.configurations.oauth2;
 
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
 import cj.projects.taskmanager.services.implementation.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -10,18 +11,13 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final UserRepository userRepository;
 
-    public CustomOauth2UserService(@Lazy UserDetailsServiceImpl userDetailsService, UserRepository userRepository) {
-        this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

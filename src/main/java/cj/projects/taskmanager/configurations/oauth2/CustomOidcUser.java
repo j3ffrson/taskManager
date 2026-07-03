@@ -1,4 +1,4 @@
-package cj.projects.taskmanager.configurations;
+package cj.projects.taskmanager.configurations.oauth2;
 
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import lombok.Getter;
@@ -9,7 +9,9 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -42,13 +44,21 @@ public class CustomOidcUser implements OidcUser {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userEntity.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
-                .collect(Collectors.toSet());
+
+        List<GrantedAuthority> authorities= new ArrayList<>();
+
+        userEntity.getRoles().stream().forEach(role->
+                authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getName().name())));
+
+        userEntity.getRoles().stream().flatMap(role->role.getListaPermisos().stream())
+                .forEach(permission->authorities.add(new SimpleGrantedAuthority(permission.getName())));
+
+
+        return authorities;
     }
 
     @Override
     public String getName() {
-        return oidcUser.getName();
+        return userEntity.getUsername();
     }
 }

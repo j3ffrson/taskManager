@@ -1,4 +1,4 @@
-package cj.projects.taskmanager.configurations;
+package cj.projects.taskmanager.configurations.oauth2;
 
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.util.JwtUtil;
@@ -46,7 +46,7 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
         user.getRoles().stream().flatMap(role->role.getListaPermisos().stream())
                 .forEach(permission->authorities.add(new SimpleGrantedAuthority(permission.getName())));
 
-        UsernamePasswordAuthenticationToken userToken= new UsernamePasswordAuthenticationToken(user,null,authorities);
+        UsernamePasswordAuthenticationToken userToken= new UsernamePasswordAuthenticationToken(user.getUsername(),null,authorities);
 
         String token= jwtUtil.generateToken(userToken);
 
