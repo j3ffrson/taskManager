@@ -2,6 +2,7 @@ package cj.projects.taskmanager.services.implementation;
 
 import cj.projects.taskmanager.DataProvider.RoleDataProvider;
 import cj.projects.taskmanager.DataProvider.UserDataProvider;
+import cj.projects.taskmanager.configurations.oauth2.CustomOauth2User;
 import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Roles;
@@ -14,14 +15,17 @@ import cj.projects.taskmanager.services.dto.response.AuthResponse;
 import cj.projects.taskmanager.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
 import java.util.Optional;
@@ -130,6 +134,54 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void createOAuth2User() {
+    void shouldCreateOAuth2User() {
+
+        OAuth2User oAuth2User = Mockito.mock(OAuth2User.class);
+
+        when(oAuth2User.getAttribute("given_name"))
+                .thenReturn("Jefferson");
+
+        when(oAuth2User.getAttribute("family_name"))
+                .thenReturn("Chaustre");
+
+        when(oAuth2User.getAttribute("email"))
+                .thenReturn("chaustrejefferson@gmail.com");
+
+        when(oAuth2User.getAttribute("name"))
+                .thenReturn("Jefferson Chaustre");
+
+        RoleEntity role = RoleDataProvider.roleAdmin();
+
+        when(roleRepository.findRoleEntitiesByNameIn(List.of(Roles.USER)))
+                .thenReturn(Set.of(role));
+
+        ArgumentCaptor<UserEntity> userCaptor =
+                ArgumentCaptor.forClass(UserEntity.class);
+
+        when(userRepository.save(any(UserEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserEntity result = userDetailsService.createOAuth2User(oAuth2User);
+
+        verify(roleRepository).findRoleEntitiesByNameIn(List.of(Roles.USER));
+        verify(userRepository).save(userCaptor.capture());
+
+        UserEntity savedUser = userCaptor.getValue();
+
+        assertThat(savedUser.getName()).isEqualTo("Jefferson");
+        assertThat(savedUser.getLastName()).isEqualTo("Chaustre");
+        assertThat(savedUser.getEmail()).isEqualTo("chaustrejefferson@gmail.com");
+        assertThat(savedUser.getUsername()).isEqualTo("Jefferson.Chaustre");
+        assertThat(savedUser.getPassword()).isNull();
+
+        assertThat(savedUser.isEnabled()).isTrue();
+        assertThat(savedUser.isAccountNonExpired()).isTrue();
+        assertThat(savedUser.isCredentialsNonExpired()).isTrue();
+        assertThat(savedUser.isAccountNonLocked()).isTrue();
+
+        assertThat(savedUser.getRoles())
+                .containsExactly(role);
+
+        assertThat(result).isSameAs(savedUser);
     }
 }
