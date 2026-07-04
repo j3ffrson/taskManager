@@ -1,10 +1,10 @@
-package cj.projects.taskmanager.configurations.oauth2;
+package cj.projects.taskmanager.services;
 
+import cj.projects.taskmanager.configurations.oauth2.CustomOauth2User;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
 import cj.projects.taskmanager.services.implementation.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
