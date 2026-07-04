@@ -4,8 +4,11 @@ import cj.projects.taskmanager.DataProvider.RoleDataProvider;
 import cj.projects.taskmanager.DataProvider.UserDataProvider;
 import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
+import cj.projects.taskmanager.persistence.entities.enums.Roles;
 import cj.projects.taskmanager.persistence.repositories.RoleRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
+import cj.projects.taskmanager.services.dto.request.AuthCreateRoleRequest;
+import cj.projects.taskmanager.services.dto.request.AuthCreateUserRequest;
 import cj.projects.taskmanager.services.dto.request.AuthLoginRequest;
 import cj.projects.taskmanager.services.dto.response.AuthResponse;
 import cj.projects.taskmanager.util.JwtUtil;
@@ -20,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -99,6 +103,30 @@ class UserDetailsServiceImplTest {
 
     @Test
     void createUser() {
+
+        RoleEntity roleEntity = RoleDataProvider.roleAdmin();
+        AuthCreateRoleRequest roleRequest= new AuthCreateRoleRequest(List.of("ADMIN"));
+        AuthCreateUserRequest createUserRequest= new AuthCreateUserRequest(
+                "Jefferson","Chaustre","chaustrejefferson@gmail.com",
+                "jeffer","camila123", roleRequest
+        );
+
+        when(roleRepository.findRoleEntitiesByNameIn(List.of(Roles.ADMIN))).thenReturn(Set.of(roleEntity));
+        when(passwordEncoder.encode("camila123")).thenReturn("passEncode");
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(i -> i.getArgument(0));
+        when(jwtUtil.generateToken(any(Authentication.class))).thenReturn("fake-token");
+
+        AuthResponse authResponse = userDetailsService.createUser(createUserRequest);
+        assertThat(authResponse).isNotNull();
+        assertThat(authResponse.username()).isEqualTo(createUserRequest.username());
+        assertThat(authResponse.JWT()).isEqualTo("fake-token");
+
+        verify(roleRepository).findRoleEntitiesByNameIn(List.of(Roles.ADMIN));
+        verify(userRepository).save(any(UserEntity.class));
+        verify(jwtUtil).generateToken(any(Authentication.class));
+        verify(passwordEncoder).encode("camila123");
+
+
     }
 
     @Test
