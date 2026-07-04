@@ -1,0 +1,187 @@
+package cj.projects.taskmanager.services.implementation;
+
+import cj.projects.taskmanager.DataProvider.RoleDataProvider;
+import cj.projects.taskmanager.DataProvider.UserDataProvider;
+import cj.projects.taskmanager.configurations.oauth2.CustomOauth2User;
+import cj.projects.taskmanager.persistence.entities.RoleEntity;
+import cj.projects.taskmanager.persistence.entities.UserEntity;
+import cj.projects.taskmanager.persistence.entities.enums.Roles;
+import cj.projects.taskmanager.persistence.repositories.RoleRepository;
+import cj.projects.taskmanager.persistence.repositories.UserRepository;
+import cj.projects.taskmanager.services.dto.request.AuthCreateRoleRequest;
+import cj.projects.taskmanager.services.dto.request.AuthCreateUserRequest;
+import cj.projects.taskmanager.services.dto.request.AuthLoginRequest;
+import cj.projects.taskmanager.services.dto.response.AuthResponse;
+import cj.projects.taskmanager.util.JwtUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class UserDetailsServiceImplTest {
+
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private RoleRepository roleRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private JwtUtil jwtUtil;
+
+    @InjectMocks
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Test
+    void loadUserByUsername() {
+
+        UserEntity userTest= UserDataProvider.getUser();
+        RoleEntity role= RoleDataProvider.roleAdmin();
+        userTest.setRoles(Set.of(role));
+
+        String username= "jeffer";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(userTest));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo(username);
+        assertThat(userDetails.getAuthorities()).extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("CREATE","DELETE","READ","ROLE_ADMIN","UPDATE");
+
+
+    }
+    @Test
+    void testLoadUserByUsernameNotFoundException() {
+        String username= "jeffer";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        assertThatThrownBy(()->userDetailsService.loadUserByUsername(username))
+                .isInstanceOf(UsernameNotFoundException.class);
+    }
+    @Test
+    void loginUser() {
+
+        String username= "jeffer";
+        UserEntity userTest= UserDataProvider.getUser();
+        RoleEntity role= RoleDataProvider.roleAdmin();
+        userTest.setRoles(Set.of(role));
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(userTest));
+        when(passwordEncoder.matches("milluh123",userTest.getPassword())).thenReturn(true);
+        when(jwtUtil.generateToken(any(Authentication.class))).thenReturn("fake-token");
+
+        AuthLoginRequest authLoginRequest = new AuthLoginRequest("jeffer","milluh123");
+
+        AuthResponse authResponse = userDetailsService.loginUser(authLoginRequest);
+        assertThat(authResponse).isNotNull();
+        assertThat(authResponse.username()).isEqualTo(authLoginRequest.username());
+        assertThat(authResponse.JWT()).isEqualTo("fake-token");
+        assertThat(authResponse.status()).isTrue();
+
+        verify(userRepository).findByUsername(username);
+        verify(passwordEncoder).matches("milluh123",userTest.getPassword());
+        verify(jwtUtil).generateToken(any(Authentication.class));
+
+
+
+    }
+
+    @Test
+    void createUser() {
+
+        RoleEntity roleEntity = RoleDataProvider.roleAdmin();
+        AuthCreateRoleRequest roleRequest= new AuthCreateRoleRequest(List.of("ADMIN"));
+        AuthCreateUserRequest createUserRequest= new AuthCreateUserRequest(
+                "Jefferson","Chaustre","chaustrejefferson@gmail.com",
+                "jeffer","camila123", roleRequest
+        );
+
+        when(roleRepository.findRoleEntitiesByNameIn(List.of(Roles.ADMIN))).thenReturn(Set.of(roleEntity));
+        when(passwordEncoder.encode("camila123")).thenReturn("passEncode");
+        when(userRepository.save(any(UserEntity.class))).thenAnswer(i -> i.getArgument(0));
+        when(jwtUtil.generateToken(any(Authentication.class))).thenReturn("fake-token");
+
+        AuthResponse authResponse = userDetailsService.createUser(createUserRequest);
+        assertThat(authResponse).isNotNull();
+        assertThat(authResponse.username()).isEqualTo(createUserRequest.username());
+        assertThat(authResponse.JWT()).isEqualTo("fake-token");
+
+        verify(roleRepository).findRoleEntitiesByNameIn(List.of(Roles.ADMIN));
+        verify(userRepository).save(any(UserEntity.class));
+        verify(jwtUtil).generateToken(any(Authentication.class));
+        verify(passwordEncoder).encode("camila123");
+
+
+    }
+
+    @Test
+    void shouldCreateOAuth2User() {
+
+        OAuth2User oAuth2User = Mockito.mock(OAuth2User.class);
+
+        when(oAuth2User.getAttribute("given_name"))
+                .thenReturn("Jefferson");
+
+        when(oAuth2User.getAttribute("family_name"))
+                .thenReturn("Chaustre");
+
+        when(oAuth2User.getAttribute("email"))
+                .thenReturn("chaustrejefferson@gmail.com");
+
+        when(oAuth2User.getAttribute("name"))
+                .thenReturn("Jefferson Chaustre");
+
+        RoleEntity role = RoleDataProvider.roleAdmin();
+
+        when(roleRepository.findRoleEntitiesByNameIn(List.of(Roles.USER)))
+                .thenReturn(Set.of(role));
+
+        ArgumentCaptor<UserEntity> userCaptor =
+                ArgumentCaptor.forClass(UserEntity.class);
+
+        when(userRepository.save(any(UserEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserEntity result = userDetailsService.createOAuth2User(oAuth2User);
+
+        verify(roleRepository).findRoleEntitiesByNameIn(List.of(Roles.USER));
+        verify(userRepository).save(userCaptor.capture());
+
+        UserEntity savedUser = userCaptor.getValue();
+
+        assertThat(savedUser.getName()).isEqualTo("Jefferson");
+        assertThat(savedUser.getLastName()).isEqualTo("Chaustre");
+        assertThat(savedUser.getEmail()).isEqualTo("chaustrejefferson@gmail.com");
+        assertThat(savedUser.getUsername()).isEqualTo("Jefferson.Chaustre");
+        assertThat(savedUser.getPassword()).isNull();
+
+        assertThat(savedUser.isEnabled()).isTrue();
+        assertThat(savedUser.isAccountNonExpired()).isTrue();
+        assertThat(savedUser.isCredentialsNonExpired()).isTrue();
+        assertThat(savedUser.isAccountNonLocked()).isTrue();
+
+        assertThat(savedUser.getRoles())
+                .containsExactly(role);
+
+        assertThat(result).isSameAs(savedUser);
+    }
+}
