@@ -1,5 +1,9 @@
 package cj.projects.taskmanager.services.implementation;
 
+import cj.projects.taskmanager.DataProvider.RoleDataProvider;
+import cj.projects.taskmanager.DataProvider.UserDataProvider;
+import cj.projects.taskmanager.persistence.entities.RoleEntity;
+import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.repositories.RoleRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -7,9 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceImplTest {
@@ -26,8 +37,30 @@ class UserDetailsServiceImplTest {
 
     @Test
     void loadUserByUsername() {
-    }
 
+        UserEntity userTest= UserDataProvider.getUser();
+        RoleEntity role= RoleDataProvider.roleAdmin();
+        userTest.setRoles(Set.of(role));
+
+        String username= "jeffer";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(userTest));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo(username);
+        assertThat(userDetails.getAuthorities()).extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("CREATE","DELETE","READ","ROLE_ADMIN","UPDATE");
+
+
+    }
+    @Test
+    void testLoadUserByUsernameNotFoundException() {
+        String username= "jeffer";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        assertThatThrownBy(()->userDetailsService.loadUserByUsername(username))
+                .isInstanceOf(UsernameNotFoundException.class);
+    }
     @Test
     void loginUser() {
     }

@@ -1,8 +1,9 @@
 package cj.projects.taskmanager.configurations;
 
-import cj.projects.taskmanager.configurations.oauth2.CustomOauth2UserService;
-import cj.projects.taskmanager.configurations.oauth2.CustomOidcUserService;
+
 import cj.projects.taskmanager.configurations.oauth2.Oauth2AuthenticationSuccessHandler;
+import cj.projects.taskmanager.services.CustomOauth2UserService;
+import cj.projects.taskmanager.services.CustomOidcUserService;
 import cj.projects.taskmanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
