@@ -11,6 +11,7 @@ import cj.projects.taskmanager.services.dto.response.AuthResponse;
 import cj.projects.taskmanager.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,21 +22,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -98,7 +98,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> newAuthorities= new ArrayList<>();
 
         newUser.getRoles().forEach(role->{
-            newAuthorities.add(new SimpleGrantedAuthority(role.getName().name()));
+            newAuthorities.add(new SimpleGrantedAuthority("ROLE_"+role.getName().name()));
         });
 
         newUser.getRoles().stream()
@@ -110,6 +110,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new AuthResponse(newUser.getUsername(), roleList, token, true
         );
+    }
+
+    public UserEntity createOAuth2User(OAuth2User oAuth2User){
+
+        UserEntity oauthUser= UserEntity.builder()
+                .name(oAuth2User.getAttribute("given_name"))
+                .lastName(oAuth2User.getAttribute("family_name"))
+                .email(oAuth2User.getAttribute("email"))
+                .username(oAuth2User.getAttribute("name").toString().replace(" ","."))
+                .password(null)
+                .roles(roleRepository.findRoleEntitiesByNameIn(List.of(Roles.USER)))
+                .isEnabled(true)
+                .isAccountNonExpired(true)
+                .isCredentialsNonExpired(true)
+                .isAccountNonLocked(true)
+                .build();
+
+        return userRepository.save(oauthUser);
+
     }
 
     private Authentication authenticate(String username,String password){

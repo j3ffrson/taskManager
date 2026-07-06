@@ -1,8 +1,10 @@
 package cj.projects.taskmanager.controller;
 
+import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Status;
+import cj.projects.taskmanager.persistence.repositories.RoleRepository;
 import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
 import cj.projects.taskmanager.services.dto.request.TaskDateBetweenFilterRequest;
@@ -25,7 +27,9 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import static cj.projects.taskmanager.DataProvider.RoleDataProvider.roleAdmin;
 import static cj.projects.taskmanager.DataProvider.TaskDataProvider.*;
 import static cj.projects.taskmanager.DataProvider.TaskDataProvider.getTaskEntity3NonId;
 
@@ -47,22 +51,28 @@ class TaskControllerTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private RoleEntity role;
     private UserEntity author;
     private TaskEntity task1;
     private TaskEntity task2;
     private TaskEntity task3;
+
     @BeforeEach
     void setUp() {
 
         taskRepository.deleteAll();
         userRepository.deleteAll();
+        role= roleRepository.save(roleAdmin());
 
         author = getUserEntity();
+        author.setRoles(Set.of(role));
         author.setPassword(passwordEncoder.encode("passtest"));
         author = userRepository.save(author);
 
