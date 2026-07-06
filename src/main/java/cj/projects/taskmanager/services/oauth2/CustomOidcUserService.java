@@ -20,7 +20,7 @@ public class CustomOidcUserService extends OidcUserService {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        OidcUser oidcUser = super.loadUser(userRequest);
+        OidcUser oidcUser = fetchOidcUser(userRequest);
 
         String email = oidcUser.getAttribute("email");
 
@@ -28,5 +28,8 @@ public class CustomOidcUserService extends OidcUserService {
                 .orElseGet(() -> userDetailsService.createOAuth2User(oidcUser));
 
         return new CustomOidcUser(oidcUser, userEntity);
+    }
+    protected OidcUser fetchOidcUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+        return super.loadUser(userRequest);
     }
 }

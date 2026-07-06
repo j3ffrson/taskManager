@@ -17,11 +17,10 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     private final UserDetailsServiceImpl userDetailsService;
     private final UserRepository userRepository;
 
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        OAuth2User oAuth2User= super.loadUser(userRequest);
+        OAuth2User oAuth2User= fetchOAuth2User(userRequest);
 
         String email= oAuth2User.getAttribute("email");
 
@@ -30,4 +29,9 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         return new CustomOauth2User(oAuth2User, userEntity);
     }
+
+    protected OAuth2User fetchOAuth2User(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        return super.loadUser(userRequest);
+    }
+
 }
