@@ -37,6 +37,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .formLogin(Customizer.withDefaults())
+                .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
+                .addFilterBefore(new TokenValidator(jwtUtil,authEntryPoint), BasicAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
                 .oauth2Login(oauth -> oauth
                         .successHandler(oAuth2AuthenticationSuccessHandler)
