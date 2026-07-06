@@ -1,5 +1,6 @@
 package cj.projects.taskmanager.persistence.repositories;
 
+import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.TaskEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Status;
@@ -20,8 +21,10 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import static cj.projects.taskmanager.DataProvider.RoleDataProvider.roleAdmin;
 import static cj.projects.taskmanager.DataProvider.TaskDataProvider.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -39,8 +42,11 @@ class TaskRepositoryTest {
     private TaskRepository taskRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     private UserEntity author;
+    private RoleEntity role;
     private TaskEntity task1;
     private TaskEntity task2;
     private TaskEntity task3;
@@ -51,7 +57,10 @@ class TaskRepositoryTest {
         taskRepository.deleteAll();
         userRepository.deleteAll();
 
-        author = userRepository.save(getUserEntity());
+        role= roleRepository.save(roleAdmin());
+        author = getUserEntity();
+        author.setRoles(Set.of(role));
+        author = userRepository.save(author);
 
         task1= getTaskEntity1NonId();
         task2= getTaskEntity2NonId();

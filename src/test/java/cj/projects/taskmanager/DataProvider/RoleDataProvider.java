@@ -2,16 +2,14 @@ package cj.projects.taskmanager.DataProvider;
 
 import cj.projects.taskmanager.persistence.entities.PermissionEntity;
 import cj.projects.taskmanager.persistence.entities.RoleEntity;
-import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Roles;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserDataProvider {
+public class RoleDataProvider {
 
-    public static UserEntity getUser() {
+    public static RoleEntity roleAdmin(){
         PermissionEntity create = PermissionEntity.builder().name("CREATE").build();
         PermissionEntity read = PermissionEntity.builder().name("READ").build();
         PermissionEntity update = PermissionEntity.builder().name("UPDATE").build();
@@ -23,18 +21,10 @@ public class UserDataProvider {
         permissions.add(update);
         permissions.add(delete);
 
-
-        return UserEntity.builder()
-                .name("Jefferson")
-                .lastName("Chaustre")
-                .username("jeffer")
-                .email("chaustrejefferson@gmail.com")
-                .password("passtest")
-                .tasks(Collections.emptyList())
-                .isEnabled(true)
-                .isAccountNonExpired(true)
-                .isCredentialsNonExpired(true)
-                .isAccountNonLocked(true)
+        return RoleEntity.builder()
+                .name(Roles.ADMIN)
+                .listaPermisos(permissions)
                 .build();
     }
+
 }
