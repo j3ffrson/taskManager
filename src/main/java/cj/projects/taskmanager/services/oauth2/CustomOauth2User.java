@@ -1,4 +1,4 @@
-package cj.projects.taskmanager.configurations.oauth2;
+package cj.projects.taskmanager.services.oauth2;
 
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import lombok.Getter;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CustomOauth2User implements OAuth2User {

@@ -1,6 +1,5 @@
-package cj.projects.taskmanager.services;
+package cj.projects.taskmanager.services.oauth2;
 
-import cj.projects.taskmanager.configurations.oauth2.CustomOidcUser;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
 import cj.projects.taskmanager.services.implementation.UserDetailsServiceImpl;
