@@ -2,7 +2,6 @@ package cj.projects.taskmanager.services.implementation;
 
 import cj.projects.taskmanager.DataProvider.RoleDataProvider;
 import cj.projects.taskmanager.DataProvider.UserDataProvider;
-import cj.projects.taskmanager.configurations.oauth2.CustomOauth2User;
 import cj.projects.taskmanager.persistence.entities.RoleEntity;
 import cj.projects.taskmanager.persistence.entities.UserEntity;
 import cj.projects.taskmanager.persistence.entities.enums.Roles;

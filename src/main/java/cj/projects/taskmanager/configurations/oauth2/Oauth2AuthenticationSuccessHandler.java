@@ -1,6 +1,8 @@
 package cj.projects.taskmanager.configurations.oauth2;
 
 import cj.projects.taskmanager.persistence.entities.UserEntity;
+import cj.projects.taskmanager.services.oauth2.CustomOauth2User;
+import cj.projects.taskmanager.services.oauth2.CustomOidcUser;
 import cj.projects.taskmanager.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
