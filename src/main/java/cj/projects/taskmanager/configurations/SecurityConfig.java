@@ -8,6 +8,7 @@ import cj.projects.taskmanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,10 +35,15 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(auth->auth
+                        .requestMatchers(HttpMethod.POST,"/api/tasks/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/tasks/sign").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .oauth2Login(oauth -> oauth
                         .successHandler(oAuth2AuthenticationSuccessHandler)
                         .userInfoEndpoint(userInfo -> userInfo

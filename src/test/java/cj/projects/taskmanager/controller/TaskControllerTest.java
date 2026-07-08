@@ -95,6 +95,7 @@ class TaskControllerTest {
     void getAllTaskTest() {
 
         restTestClient.get().uri("/api/tasks").header("Api-Version", "1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -111,6 +112,7 @@ class TaskControllerTest {
     void getAllTaskByStatusTest() {
 
         restTestClient.get().uri("/api/tasks/status/NEW").header("Api-Version", "1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -144,6 +146,7 @@ class TaskControllerTest {
     void getAllTaskByPeriodTimeTest() {
 
         restTestClient.get().uri("/api/tasks/period/date?after=2026-04-01&before=2026-04-03").header("Api-Version","1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -161,6 +164,7 @@ class TaskControllerTest {
     void getTaskByIdTest() {
 
         restTestClient.get().uri("/api/tasks/"+task1.getId().toString()).header("Api-Version","1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         expect-> expect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -215,6 +219,7 @@ class TaskControllerTest {
     void deleteTaskTest() {
 
         restTestClient.delete().uri("/api/tasks/delete/"+task1.getId().toString()).header("Api-Version","1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         expect -> expect.expectBody().isEmpty(),
