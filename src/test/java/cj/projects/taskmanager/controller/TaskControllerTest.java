@@ -7,7 +7,6 @@ import cj.projects.taskmanager.persistence.entities.enums.Status;
 import cj.projects.taskmanager.persistence.repositories.RoleRepository;
 import cj.projects.taskmanager.persistence.repositories.TaskRepository;
 import cj.projects.taskmanager.persistence.repositories.UserRepository;
-import cj.projects.taskmanager.services.dto.request.TaskDateBetweenFilterRequest;
 import cj.projects.taskmanager.services.dto.request.TaskRequest;
 import cj.projects.taskmanager.services.dto.response.TaskDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,6 +95,7 @@ class TaskControllerTest {
     void getAllTaskTest() {
 
         restTestClient.get().uri("/api/tasks").header("Api-Version", "1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -112,6 +112,7 @@ class TaskControllerTest {
     void getAllTaskByStatusTest() {
 
         restTestClient.get().uri("/api/tasks/status/NEW").header("Api-Version", "1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -144,9 +145,8 @@ class TaskControllerTest {
     @Test
     void getAllTaskByPeriodTimeTest() {
 
-        restTestClient.post().uri("/api/tasks/period/date").header("Api-Version","1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new TaskDateBetweenFilterRequest("2026-04-01","2026-04-03"))
+        restTestClient.get().uri("/api/tasks/period/date?after=2026-04-01&before=2026-04-03").header("Api-Version","1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         spect -> spect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -164,6 +164,7 @@ class TaskControllerTest {
     void getTaskByIdTest() {
 
         restTestClient.get().uri("/api/tasks/"+task1.getId().toString()).header("Api-Version","1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         expect-> expect.expectHeader().contentType(MediaType.APPLICATION_JSON),
@@ -218,6 +219,7 @@ class TaskControllerTest {
     void deleteTaskTest() {
 
         restTestClient.delete().uri("/api/tasks/delete/"+task1.getId().toString()).header("Api-Version","1")
+                .headers(headers -> headers.setBasicAuth("jeffer", "passtest"))
                 .exchange()
                 .expectAll(
                         expect -> expect.expectBody().isEmpty(),
