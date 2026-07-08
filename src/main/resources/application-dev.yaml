@@ -7,7 +7,7 @@ spring:
     url: ${DATABASE_URL}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
   flyway:
     enabled: false
   security:
