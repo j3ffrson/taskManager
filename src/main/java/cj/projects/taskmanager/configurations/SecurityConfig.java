@@ -38,6 +38,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .formLogin(Customizer.withDefaults())
+                .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
+                .addFilterBefore(new TokenValidator(jwtUtil,authEntryPoint), BasicAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(HttpMethod.POST,"/api/tasks/login").permitAll()
